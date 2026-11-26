@@ -1,0 +1,13 @@
+/browser Open https://bos.pro and inspect the website as a QA engineer.
+
+Look for one reproducible UI or functional bug.
+Do not modify any code or submit any forms.
+Check the page carefully, reproduce the issue if possible,
+and report:
+1. The exact page and location of the bug.
+2. Steps to reproduce it.
+3. Expected behavior.
+4. Actual behavior.
+5. Evidence, such as a screenshot.
+
+Do not report assumptions as confirmed bugs.
