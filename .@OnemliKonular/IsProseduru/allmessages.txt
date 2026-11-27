@@ -1,0 +1,144 @@
+Thank you for confirming that TBUF-3718 is now visible. I received both Loom recordings and your steps for the screen flicker during Google registration, and saved them with your report.
+— агент Рубина
+Thank you for your feedback
+
+Could you please let me know what the next steps in the recruitment process will be?
+
+Approximately how long should I expect to wait before receiving an update regarding the job opportunity?
+
+Also, could you share BOS.PRO's official LinkedIn page?
+
+Thank you for your time
+Hi Elgun! Thanks for your questions.
+
+We've noted your words from 27 Oct: you can start around $2,500 and are open to discussion. That figure is not confirmed. The contract draft has not been created yet. If a draft is prepared, we'll send it here for review. I can't confirm the timing yet.
+
+Our company page is https://www.linkedin.com/company/agiens — Agiens, listed as "AI marketplace". BOS.PRO is a product of Agiens LLC.
+Linkedin
+Agiens | LinkedIn
+Agiens | 380 followers on LinkedIn. AI marketplace
+Thank you for sharing your LinkedIn page. I appriciate it 
+ I've followed your company and look forward to hearing from you regarding the next steps.
+
+Wishing you a lovely day
+Hello, Elgun!
+
+Here is the next step you asked about — the draft agreement for your review:
+https://crm.app.bos.pro/#/sign/f7f2d934-2f2b-493b-888d-46e3c444dab4
+
+The draft proposes 2,500 USDT per month as a starting point. You mentioned "around $2,500" and being open to discussion — please let us know whether the proposed amount and currency work for you.
+
+Why we invited you: your production Next.js and booking-platform background plus hands-on MCP/LLM integrations (Claude, ChatGPT, Gemini) map directly onto our agentic operations work, and your demo bug reports (registration flow, email validation, CORS, TTFB) showed exactly the systematic, well-documented testing we need.
+
+How we work: standups at 12:00 and 19:00 MSK with camera and screen sharing — a shared work table with agent-performance review; agents are followed up early morning and late evening, often on weekends. Full-time means fully dedicated, with no second job.
+
+This draft is not approved yet: after your preliminary agreement we prepare the final version, which requires our CEO's approval before anything becomes binding. Please look through it and share your reaction; if you're comfortable proceeding, we'll also need a photo of your passport to prepare the final version.
+BOS CRM
+BOS CRM — подбор и воронки
+BOS CRM — подбор кандидатов и воронки найма: трекинг кандидатов, собеседования, AI-агенты и коммуникации в одном окне.
+Hello again 🤝
+
+Thank you for sharing the draft agreement and for the opportunity. I have reviewed it, and I am happy with the proposed compensation of 2,500 USDT per month. Receiving payment in USDT is not a problem for me, as I can convert it to USD locally.🙂
+
+I just have a few questions I would like to clarify before signing:🙏
+
+1. Personal Leave and Special Occasions
+
+Would it be possible to take occasional days off in exceptional circumstances or for important personal events, such as New Year's, family occasions, weddings, engagements, or other special events? I understand the importance of full-time commitment, but I would like to know whether some flexibility is possible in such situations.
+
+2. Working Hours and Weekends
+
+Could you clarify how the working schedule is organized?
+
+- Do we generally work on weekends, or is weekend work only occasional?
+- When weekend work is required, do we usually work more hours than on regular weekdays?
+- Is there a defined daily working schedule? For example, am I expected to start working at 9:00 AM, or is the schedule flexible as long as I attend the two daily stand-ups and complete my responsibilities?
+
+In other words, should I expect to be available in front of my computer throughout the day and evening, or are there defined working hours?
+
+3. Starting Date and First Payment
+
+Once I approve and sign the agreement, how soon would I be expected to start?
+
+For example, if I sign the agreement and start working on the 6th of the month, would I receive payment for the days worked between the 6th and the 15th, or would my first payment be made at the end of the month? I would just like to understand how the first payment is calculated and scheduled.
+
+4. Development Team
+
+Will I be working as the only developer responsible for this area, or will there be other developers on the team? Do you already have other developers working on the platform with whom I will collaborate?
+
+5. AI Tools and Subscriptions
+
+Does the company provide subscriptions to tools such as Claude and Gemini, which we will be using for development? Or are developers expected to purchase and use their own subscriptions?
+
+Finally, some of these questions may already be addressed in the agreement, and I may have overlooked those details while reviewing it. These are simply the questions that came to mind during my review.
+
+Once I have your clarification on these points, I will be happy to proceed with signing the agreement.
+
+Thank you for your time and clarification. I look forward to hearing from you!
+baymistery
+Hello again 🤝 Thank you for sharing the draft agreement and for the opportunity. I have reviewed i...
+One more clarification regarding the payment schedule: I understand that payments are scheduled for the 1st and 15th of each month, with a possible delay of up to 5 days. Does this mean payments are normally made on those exact dates, and the additional 5 days are only a contingency for exceptional delays?
+
+I would just like to confirm that payments are normally made on the 1st and 15th, rather than being routinely delayed by up to 5 days.🙏
+I've sent my passport details. I hope you can clarify the questions I've shared with you.🙏
+
+Once these points are clarified and I have a better understanding of the terms, I'll be happy to proceed with signing the agreement.
+
+I just want to make sure everything is clear on both sides before moving forward. Thank you for your understanding🤝
+Hello Elgun! 👋
+
+Thank you for the passport and for the questions.
+I have passed them on, including your note about the 1st and the 15th.
+I will write again once I have the answers. Nothing is needed from you right now.
+Thank you so much for your quick response and for keeping me updated. I really appreciate your help and efficiency.
+
+I'll look forward to hearing the answers. Thanks again🤝
+Hi Maria, hope you are doing well✊️
+
+I just wanted to follow up and check 
+if there have been any updates regarding the questions I shared about the agreement.
+
+I completely understand that some points may take time to clarify.
+ I just wanted to check in and see if there is any news.
+
+Thank you and I look forward to hearing from you 🙏
+Hi Maria,
+
+Hope you are doing well 🙏
+
+I also reached out to you through the HR platform, but I wanted to follow up here as well.
+
+I understand that you may need time to discuss the questions I raised. However, I haven't received any updates so far, and I would really appreciate some clarity on the current situation.
+
+Could you please let me know if the process is still moving forward? If there has been a change in the decision, or if my questions raised any concerns about my application, I would appreciate your honest feedback.
+
+I'm completely open to either a positive or negative answer. I would just prefer to know where things stand rather than remain uncertain.
+
+Thank you for your understanding.
+Hi Elgun, sorry for the long wait, and thank you for your patience. We confirm 2,500 USDT per month. On your questions:
+1) Days off in exceptional cases (New Year, family events) are possible by agreement in advance.
+2) Weekend work is occasional and task-driven, not permanent. There is no fixed start time: the two daily stand-ups at 12:00 and 19:00 MSK and your results are what matter.
+3) We will confirm the start date together with the final contract. The first payment is pro rata to the days worked and is paid on the nearest payment date (the 1st or the 15th).
+4) We will introduce you to the team setup during onboarding.
+5) The "+5 days" is only a buffer for exceptional cases, not a normal delay.
+We are preparing the final contract and will send it to you for signing after a final check.
+For the final contract, please send us as text your full name in Latin letters exactly as in your passport, and your passport number.
+Hello, and I’m sorry. I completely forgot about this. Since you got back to me quite late, I assumed that you weren’t going to respond. I even contacted you through HH.ru, and I was quite disappointed because this had never happened to me before. You had told me that you would get back to me, but unfortunately, I never heard from you. Usually, companies let candidates know either way, whether the answer is positive or negative.
+
+I’m currently in the village, but I’ll be heading home soon. I’ll be at home tomorrow and will get back to you then.
+Мария
+For the final contract, please send us as text your full name in Latin letters exactly as in your pa...
+Elgun Azmammadov
+C03992502
+Мария
+For the final contract, please send us as text your full name in Latin letters exactly as in your pa...
+I will be waiting your respond I already sent details
+I have one small request. When you send the final contract here, could you please also send it to my email: elgun.ezmemmedov@gmail.com
+
+Sometimes I forget to check Telegram, but I check my email regularly. Of course, I will still try my best to reply to you on time here as well.
+
+Thank you 🙏
+Hi Elgun, thank you — we received your name and passport details, and sorry for the slow reply. We are preparing the final contract now and will send it here in Telegram with a copy to elgun.ezmemmedov@gmail.com.
+Мария
+Hi Elgun, thank you — we received your name and passport details, and sorry for the slow reply. We a...
+Hi Maria, thank you for the update and for sending it also to my email. I will wait for the final contract and check it as soon as I receive it. Have a nice evening🙏

@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="az">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Şema 2 — A/B Test + Rezervasiya + Analitika</title>
+<style>
+  :root{--bg:#f7f7f5;--card:#fff;--ink:#1d1d1f;--mute:#666;--line:#c9c9c9;--hi:#2563eb;
+        --orange:#e8890c;--green:#1f9d55;--db:#b6efc2;--blue:#bfe0ff;--yellow:#fff0a8;--red:#d93025}
+  @media (prefers-color-scheme:dark){:root{--bg:#141416;--card:#1f1f23;--ink:#ececec;--mute:#a0a0a0;--line:#444;--db:#1f4a2c;--blue:#1d3a57;--yellow:#4a4216}}
+  *{box-sizing:border-box}
+  body{margin:0;font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}
+  header{padding:20px 28px 8px}
+  h1{margin:0 0 4px;font-size:22px}
+  header p{margin:0;color:var(--mute)}
+  .bar{display:flex;gap:8px;padding:12px 28px;flex-wrap:wrap}
+  button{font:inherit;padding:7px 14px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+  button.primary{background:var(--hi);color:#fff;border-color:var(--hi)}
+  .wrap{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(300px,1fr);gap:24px;padding:8px 28px 40px}
+  @media (max-width:900px){.wrap{grid-template-columns:1fr}}
+  .diagram{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px 16px}
+  .row{display:grid;grid-template-columns:1.1fr minmax(0,1.6fr) 1.1fr;align-items:center;gap:10px}
+  .main{display:flex;justify-content:center;gap:12px}
+  .side{display:flex;align-items:center;gap:6px}
+  .side.l{justify-content:flex-end}
+  .side .node{padding:8px 10px;flex:0 1 auto;width:86%;max-width:none}
+  .side .link{flex:1 1 12px;min-width:12px!important}
+  .side .node small{font-size:12px;line-height:1.4}
+  .side .link{flex:1;border-top:2px dashed var(--line);min-width:16px}
+  .arrow{display:grid;grid-template-columns:1.1fr minmax(0,1.6fr) 1.1fr;height:46px}
+  .arrow .a{position:relative;display:flex;justify-content:center}
+  .arrow .a::before{content:"";width:2px;background:var(--ink);height:100%}
+  .arrow .a::after{content:"";position:absolute;bottom:0;border:6px solid transparent;border-top:8px solid var(--ink);transform:translateY(8px)}
+  .arrow .lbl{position:absolute;left:calc(50% + 12px);top:50%;transform:translateY(-50%);color:var(--red);font-size:13px;white-space:nowrap}
+  .node{border:1.6px solid var(--ink);border-radius:10px;padding:10px 14px;text-align:center;background:var(--card);cursor:pointer;transition:.15s;flex:1;max-width:420px}
+  .node:hover{transform:translateY(-1px);box-shadow:0 3px 10px rgba(0,0,0,.12)}
+  .node b{display:block;font-size:14.5px}
+  .node small{color:var(--mute);font-size:12.5px}
+  .node.orange{border-color:var(--orange)} .node.orange b{color:var(--orange)}
+  .node.green{border-color:var(--green)} .node.green b{color:var(--green)}
+  .node.db{background:var(--db)} .node.blue{background:var(--blue)} .node.yellow{background:var(--yellow)}
+  .node.redt b{color:var(--red)}
+  .node.code{font:12px/1.5 ui-monospace,Consolas,monospace;text-align:left}
+  .group{border:1.6px solid var(--ink);border-radius:14px;padding:10px 12px 14px;flex:1;max-width:560px;cursor:pointer;background:var(--card)}
+  .group>b{display:block;text-align:center;margin-bottom:10px;font-size:16px}
+  .group .kids{display:flex;gap:12px}
+  .active{outline:3px solid var(--hi);outline-offset:2px;box-shadow:0 0 0 7px rgba(37,99,235,.15)!important}
+  .panel{position:sticky;top:16px;align-self:start;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;max-height:calc(100vh - 32px);overflow:auto}
+  .panel h2{margin:0 0 4px;font-size:18px}
+  .panel .step{color:var(--hi);font-size:12.5px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+  .panel code,.panel pre{font-family:ui-monospace,Consolas,monospace;font-size:12.5px;background:rgba(127,127,127,.12);border-radius:5px}
+  .panel code{padding:1px 5px} .panel pre{padding:10px;overflow:auto}
+  .panel table{border-collapse:collapse;width:100%;font-size:13.5px;margin:8px 0}
+  .panel td,.panel th{border:1px solid var(--line);padding:5px 8px;text-align:left;vertical-align:top}
+  .tip{border-left:3px solid var(--hi);padding:6px 12px;background:rgba(37,99,235,.07);border-radius:0 8px 8px 0;margin:10px 0}
+</style>
+</head>
+<body>
+<header>
+  <h1>Şema 2 — A/B Test + Rezervasiya + Marketinq Analitikası</h1>
+  <p>Hər qutuya klik et → sağda izahı açılır. "Axını göstər" sorğunun yolunu addım-addım göstərir.</p>
+</header>
+<div class="bar">
+  <button class="primary" id="play">▶ Axını göstər</button>
+  <button id="prev">← Əvvəlki</button>
+  <button id="next">Növbəti →</button>
+  <button id="ovw">Ümumi baxış</button>
+</div>
+<div class="wrap">
+  <div class="diagram" id="diagram"></div>
+  <aside class="panel" id="panel"></aside>
+</div>
+
+<script>
+const ROWS = [
+  {nodes:[{id:"landing",t:"React Landing Page",s:"Visitors enter the website",c:"redt"}]},
+  {arrow:""},
+  {nodes:[{id:"varA",t:"Variant A",s:"Landing page A",c:"blue"},{id:"varB",t:"Variant B",s:"Landing page B",c:"yellow"}],
+   side:{pos:"r",id:"track",t:"POST /api/track",s:"Impression recording: which variant was seen.<br>Saves visitor_id, experiment_id, variant_id to DB",c:"redt"}},
+  {arrow:""},
+  {nodes:[{id:"backend",t:"Node.js Backend + MCP Server",s:"Availability · Booking · Experiment tracking — Validates visitor_id during booking"}],
+   side:{pos:"l",id:"mcp",t:"MCP PROTOKOL",s:"1. check_room_availability<br>2. book_room"}},
+  {arrow:""},
+  {nodes:[{id:"db",t:"PostgreSQL Database",s:"Experiments · Variants · Rooms · Bookings · Events",c:"db"}],
+   side:{pos:"r",id:"security",t:"Security Rule",s:"variant_id read strictly from DB booking record, ignoring frontend"}},
+  {arrow:""},
+  {nodes:[{id:"wh",t:"Webhook: booking.created",s:"Includes experiment_id and variant_id"}]},
+  {arrow:""},
+  {nodes:[{id:"recv",t:"Web Hook Receiver",s:""}]},
+  {arrow:""},
+  {nodes:[{id:"dash",t:"Marketing Analytics Dashboard",s:"Conversion Rate · CPA · Variant Performance"}]}
+];
+
+const INFO = {
+  overview:{h:"Ümumi baxış",b:`
+    <p>Şema 1-in <b>marketinq ilə genişləndirilmiş</b> versiyası. Saytın iki landing page variantı var: <b>A</b> və <b>B</b>.</p>
+    <p>Hər ziyarətçiyə birini göstəririk → <b>kimin nəyi gördüyünü</b> qeyd edirik → rezervasiya edəndə onu <b>həmin variantla</b> bağlayırıq → dashboard-da qalibi görürük.</p>
+    <div class="tip"><b>Cavablanan sual:</b> "Landing page A, yoxsa B daha çox rezervasiya gətirir?"</div>`},
+  landing:{h:"React Landing Page",b:`
+    <p>Ziyarətçi sayta daxil olur. Hər ziyarətçiyə unikal <code>visitor_id</code> verilir (cookie / localStorage).</p>
+    <div class="tip"><code>visitor_id</code> — ziyarətçini "gördü" anından "rezerv etdi" anına qədər izləyən ipdir.</div>`},
+  varA:{h:"Variant A",b:`
+    <p>Experiment-in birinci versiyası. Məs. mavi düymə, "İndi rezerv et".</p>
+    <p>Ziyarətçi təsadüfi şəkildə A və ya B-yə düşür və <b>hər dəfə eyni variantı görür</b> — təyinat yadda saxlanılır.</p>`},
+  varB:{h:"Variant B",b:`
+    <p>İkinci versiya. Məs. sarı düymə, "Son 3 otaq qaldı!".</p>
+    <p>A ilə B arasında <b>yalnız bir şey</b> fərqli olmalıdır ki, nəticəni nəyin dəyişdiyini bilək.</p>`},
+  track:{h:"POST /api/track — Impression",b:`
+    <p><b>Impression</b> = "ziyarətçi bu variantı gördü" faktı. Səhifə göstərilən kimi frontend göndərir:</p>
+    <pre>POST /api/track
+{
+  "visitor_id": "v_123",
+  "experiment_id": "exp_landing",
+  "variant_id": "B"
+}</pre>
+    <p>Backend bunu bazaya yazır. Bu, konversiya hesabının <b>məxrəcidir</b> (neçə nəfər gördü).</p>`},
+  mcp:{h:"MCP Protokol",b:`
+    <p>Backend həm də MCP server kimi AI agentlərə iki tool açır:</p>
+    <table><tr><td><code>check_room_availability</code></td><td>Tarix aralığında otaq boşdurmu?</td></tr>
+    <tr><td><code>book_room</code></td><td>Rezervasiya et</td></tr></table>
+    <p>İkitərəfli ox = agent sorğu göndərir, server cavab qaytarır. Rezervasiyanı həm sayt istifadəçisi, həm AI agent edə bilər — <b>eyni məntiq, eyni baza</b>.</p>`},
+  backend:{h:"Node.js Backend + MCP Server",b:`
+    <table><tr><td><b>Availability</b></td><td>Otaq boşdurmu?</td></tr>
+    <tr><td><b>Booking</b></td><td>Rezervasiya yaratmaq</td></tr>
+    <tr><td><b>Experiment tracking</b></td><td>Impression-ları və variant təyinatlarını saxlamaq</td></tr>
+    <tr><td><b>Validates visitor_id</b></td><td>Rezervasiyada gələn <code>visitor_id</code> bazada mövcuddurmu, impression-ı varmı — yoxlanılır</td></tr></table>
+    <div class="tip">Uydurma <code>visitor_id</code> ilə rezervasiya experiment-ə bağlanmır.</div>`},
+  db:{h:"PostgreSQL Database",b:`
+    <table><tr><th>Cədvəl</th><th>Nə saxlayır</th></tr>
+    <tr><td><code>Experiments</code></td><td>Testlər (məs. <code>exp_landing</code>, başlama/bitmə)</td></tr>
+    <tr><td><code>Variants</code></td><td>Hər testin variantları (A, B)</td></tr>
+    <tr><td><code>Rooms</code></td><td>Otaqlar</td></tr>
+    <tr><td><code>Bookings</code></td><td>Rezervasiyalar + <code>visitor_id</code>, <code>experiment_id</code>, <code>variant_id</code></td></tr>
+    <tr><td><code>Events</code></td><td>Impression-lar və webhook hadisələri</td></tr></table>`},
+  security:{h:"Security Rule — ən vacib qayda",b:`
+    <p>Webhook-a və analitikaya gedən <code>variant_id</code> <b>frontend-in göndərdiyindən deyil, bazadakı qeyddən</b> götürülür.</p>
+    <p><b>Niyə?</b> İstifadəçi DevTools ilə sorğuda <code>"variant_id": "A"</code>-nı <code>"B"</code>-yə dəyişə bilər → test nəticəsi saxtalaşar.</p>
+    <pre>// ✗ Səhv
+variant = req.body.variant_id
+
+// ✓ Düzgün
+variant = db.findAssignment(visitor_id).variant_id</pre>
+    <div class="tip">Qızıl qayda: <b>frontend-ə heç vaxt etibar etmə.</b></div>`},
+  wh:{h:"Webhook: booking.created",b:`
+    <p>Şema 1-dəki kimi — yalnız commit-dən sonra. Amma indi experiment məlumatı da var:</p>
+    <pre>{
+  "event_id": "evt_001",
+  "event_type": "booking.created",
+  "booking_id": "booking_001",
+  "room_id": "room_001",
+  "visitor_id": "v_123",
+  "experiment_id": "exp_landing",
+  "variant_id": "B",
+  "created_at": "2026-11-01T12:00:00Z"
+}</pre>`},
+  recv:{h:"Web Hook Receiver",b:`<p>Hadisəni qəbul edir, yoxlayır (sahələr, imza), saxlayır və analitikaya ötürür. <code>event_id</code> ilə eyni hadisəni iki dəfə saymır.</p>`},
+  dash:{h:"Marketing Analytics Dashboard",b:`
+    <table><tr><th>Göstərici</th><th>Düstur</th></tr>
+    <tr><td><b>Conversion Rate</b></td><td>rezervasiya ÷ impression</td></tr>
+    <tr><td><b>CPA</b> (Cost Per Acquisition)</td><td>marketinq xərci ÷ rezervasiya</td></tr>
+    <tr><td><b>Variant Performance</b></td><td>A ilə B-nin müqayisəsi</td></tr></table>
+    <p><b>Nümunə</b> (hər varianta $300 reklam):</p>
+    <table><tr><th></th><th>Impression</th><th>Booking</th><th>Conv.</th><th>CPA</th></tr>
+    <tr><td>A</td><td>1000</td><td>30</td><td>3%</td><td>$10.00</td></tr>
+    <tr><td>B</td><td>1000</td><td>45</td><td>4.5%</td><td>$6.67</td></tr></table>
+    <div class="tip">Nəticə: <b>B qalibdir</b> — daha çox konversiya, daha ucuz müştəri.</div>`}
+};
+
+const STEPS = ["landing","varA","varB","track","backend","mcp","db","security","wh","recv","dash"];
+</script>
+<script>
+// ---------- render (eyni kod hər iki faylda) ----------
+const d = document.getElementById("diagram"), panel = document.getElementById("panel");
+const nodeHTML = n => `<div class="node ${n.c||""} ${n.code?"code":""}" data-id="${n.id}">${n.t?`<b>${n.t}</b>`:""}<small>${n.s||""}</small></div>`;
+d.innerHTML = ROWS.map(r=>{
+  if ("arrow" in r) return `<div class="arrow"><div></div><div class="a" ${r.id?`data-id="${r.id}" style="cursor:pointer"`:""}>${r.arrow?`<span class="lbl">${r.arrow}</span>`:""}</div><div></div></div>`;
+  const main = r.group
+    ? `<div class="group" data-id="${r.group.id}"><b>${r.group.t}</b><div class="kids">${r.group.kids.map(nodeHTML).join("")}</div></div>`
+    : r.nodes.map(nodeHTML).join("");
+  const side = s => s ? `<div class="side ${s.pos}">${s.pos==="r"?`<span class="link"></span>${nodeHTML(s)}`:`${nodeHTML(s)}<span class="link"></span>`}</div>` : `<div></div>`;
+  const l = r.side&&r.side.pos==="l"?r.side:null, rt = r.side&&r.side.pos==="r"?r.side:null;
+  return `<div class="row">${side(l)}<div class="main">${main}</div>${side(rt)}</div>`;
+}).join("");
+
+let cur = -1, timer = null;
+function show(id){
+  document.querySelectorAll(".active").forEach(e=>e.classList.remove("active"));
+  const el = d.querySelector(`[data-id="${id}"]`);
+  if (el){ el.classList.add("active"); el.scrollIntoView({block:"nearest",behavior:"smooth"}); }
+  const i = STEPS.indexOf(id); if (i>=0) cur = i;
+  const info = INFO[id];
+  panel.innerHTML = (i>=0?`<div class="step">Addım ${i+1} / ${STEPS.length}</div>`:"") + `<h2>${info.h}</h2>${info.b}`;
+}
+d.addEventListener("click", e=>{
+  const t = e.target.closest("[data-id]"); if(!t) return;
+  e.stopPropagation(); stop(); show(t.dataset.id);
+});
+function stop(){ clearInterval(timer); timer=null; document.getElementById("play").textContent="▶ Axını göstər"; }
+document.getElementById("next").onclick = ()=>{ stop(); show(STEPS[Math.min(cur+1,STEPS.length-1)]); };
+document.getElementById("prev").onclick = ()=>{ stop(); show(STEPS[Math.max(cur-1,0)]); };
+document.getElementById("ovw").onclick = ()=>{ stop(); cur=-1; document.querySelectorAll(".active").forEach(e=>e.classList.remove("active")); show("overview"); };
+document.getElementById("play").onclick = function(){
+  if (timer) return stop();
+  this.textContent = "⏸ Dayandır";
+  cur = -1; show(STEPS[0]);
+  timer = setInterval(()=>{ if (cur>=STEPS.length-1) return stop(); show(STEPS[cur+1]); }, 3200);
+};
+document.addEventListener("keydown", e=>{ if(e.key==="ArrowRight") document.getElementById("next").click(); if(e.key==="ArrowLeft") document.getElementById("prev").click(); });
+show("overview");
+</script>
+</body>
+</html>

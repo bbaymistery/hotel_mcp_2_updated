@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="az">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Şema 1 — MCP Otel Rezervasiya Arxitekturası</title>
+<style>
+  :root{--bg:#f7f7f5;--card:#fff;--ink:#1d1d1f;--mute:#666;--line:#c9c9c9;--hi:#2563eb;
+        --orange:#e8890c;--green:#1f9d55;--db:#b6efc2;--blue:#bfe0ff;--yellow:#fff0a8;--red:#d93025}
+  @media (prefers-color-scheme:dark){:root{--bg:#141416;--card:#1f1f23;--ink:#ececec;--mute:#a0a0a0;--line:#444;--db:#1f4a2c;--blue:#1d3a57;--yellow:#4a4216}}
+  *{box-sizing:border-box}
+  body{margin:0;font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}
+  header{padding:20px 28px 8px}
+  h1{margin:0 0 4px;font-size:22px}
+  header p{margin:0;color:var(--mute)}
+  .bar{display:flex;gap:8px;padding:12px 28px;flex-wrap:wrap}
+  button{font:inherit;padding:7px 14px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+  button.primary{background:var(--hi);color:#fff;border-color:var(--hi)}
+  .wrap{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(300px,1fr);gap:24px;padding:8px 28px 40px}
+  @media (max-width:900px){.wrap{grid-template-columns:1fr}}
+  .diagram{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px 16px}
+  .row{display:grid;grid-template-columns:1.1fr minmax(0,1.6fr) 1.1fr;align-items:center;gap:10px}
+  .main{display:flex;justify-content:center;gap:12px}
+  .side{display:flex;align-items:center;gap:6px}
+  .side.l{justify-content:flex-end}
+  .side .node{padding:8px 10px;flex:0 1 auto;width:86%;max-width:none}
+  .side .link{flex:1 1 12px;min-width:12px!important}
+  .side .node small{font-size:12px;line-height:1.4}
+  .side .link{flex:1;border-top:2px dashed var(--line);min-width:16px}
+  .arrow{display:grid;grid-template-columns:1.1fr minmax(0,1.6fr) 1.1fr;height:46px}
+  .arrow .a{position:relative;display:flex;justify-content:center}
+  .arrow .a::before{content:"";width:2px;background:var(--ink);height:100%}
+  .arrow .a::after{content:"";position:absolute;bottom:0;border:6px solid transparent;border-top:8px solid var(--ink);transform:translateY(8px)}
+  .arrow .lbl{position:absolute;left:calc(50% + 12px);top:50%;transform:translateY(-50%);color:var(--red);font-size:13px;white-space:nowrap}
+  .node{border:1.6px solid var(--ink);border-radius:10px;padding:10px 14px;text-align:center;background:var(--card);cursor:pointer;transition:.15s;flex:1;max-width:420px}
+  .node:hover{transform:translateY(-1px);box-shadow:0 3px 10px rgba(0,0,0,.12)}
+  .node b{display:block;font-size:14.5px}
+  .node small{color:var(--mute);font-size:12.5px}
+  .node.orange{border-color:var(--orange)} .node.orange b{color:var(--orange)}
+  .node.green{border-color:var(--green)} .node.green b{color:var(--green)}
+  .node.db{background:var(--db)} .node.blue{background:var(--blue)} .node.yellow{background:var(--yellow)}
+  .node.redt b{color:var(--red)}
+  .node.code{font:12px/1.5 ui-monospace,Consolas,monospace;text-align:left}
+  .group{border:1.6px solid var(--ink);border-radius:14px;padding:10px 12px 14px;flex:1;max-width:560px;cursor:pointer;background:var(--card)}
+  .group>b{display:block;text-align:center;margin-bottom:10px;font-size:16px}
+  .group .kids{display:flex;gap:12px}
+  .active{outline:3px solid var(--hi);outline-offset:2px;box-shadow:0 0 0 7px rgba(37,99,235,.15)!important}
+  .panel{position:sticky;top:16px;align-self:start;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;max-height:calc(100vh - 32px);overflow:auto}
+  .panel h2{margin:0 0 4px;font-size:18px}
+  .panel .step{color:var(--hi);font-size:12.5px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+  .panel code,.panel pre{font-family:ui-monospace,Consolas,monospace;font-size:12.5px;background:rgba(127,127,127,.12);border-radius:5px}
+  .panel code{padding:1px 5px} .panel pre{padding:10px;overflow:auto}
+  .panel table{border-collapse:collapse;width:100%;font-size:13.5px;margin:8px 0}
+  .panel td,.panel th{border:1px solid var(--line);padding:5px 8px;text-align:left;vertical-align:top}
+  .tip{border-left:3px solid var(--hi);padding:6px 12px;background:rgba(37,99,235,.07);border-radius:0 8px 8px 0;margin:10px 0}
+</style>
+</head>
+<body>
+<header>
+  <h1>Şema 1 — MCP ilə Otel Rezervasiya Arxitekturası</h1>
+  <p>Hər qutuya klik et → sağda izahı açılır. "Axını göstər" sorğunun yolunu addım-addım göstərir.</p>
+</header>
+<div class="bar">
+  <button class="primary" id="play">▶ Axını göstər</button>
+  <button id="prev">← Əvvəlki</button>
+  <button id="next">Növbəti →</button>
+  <button id="ovw">Ümumi baxış</button>
+</div>
+<div class="wrap">
+  <div class="diagram" id="diagram"></div>
+  <aside class="panel" id="panel"></aside>
+</div>
+
+<script>
+const ROWS = [
+  {nodes:[{id:"host",t:"MCP Host — Antigravity",s:"AI Agent + MCP Client"}]},
+  {arrow:"MCP Protocol ⇒ (tools/list, tools/call)", id:"proto"},
+  {nodes:[{id:"server",t:"Node.js MCP Server",s:"Transport · Routing · Zod Validation"}]},
+  {arrow:"Routes to"},
+  {group:{id:"biz",t:"Business Logic Service",kids:[
+     {id:"book",t:"Book Service",s:"Initiate Bookings",c:"orange"},
+     {id:"avail",t:"Availability Service",s:"Prevents double booking for same dates",c:"green"}]}},
+  {arrow:"Query Rooms  ·  DB Transaction (Commit)", id:"tx"},
+  {nodes:[{id:"db",t:"Neon PostgreSQL + Prisma",s:"Rooms · Customers · Bookings · WebhookEvents — DB-Level Double Booking Constraint",c:"db"}]},
+  {arrow:"ONLY after successful DB Commit", id:"after"},
+  {nodes:[{id:"wh",t:"Webhook Service",s:"Generates 'booking.created' event"}]},
+  {arrow:""},
+  {nodes:[{id:"recv",t:"Simulated Webhook Receiver",s:"Local event log · Payload verification"}],
+   side:{pos:"r",id:"payload",code:true,t:"",s:'"event_id": "evt_001",<br>"event_type": "booking.created",<br>"booking_id": "booking_001",<br>"room_id": "room_001",<br>"customer_id": "customer_001",<br>"created_at": "2026-11-01T12:00:00Z"'}}
+];
+
+const INFO = {
+  overview:{h:"Ümumi baxış",b:`
+    <p>AI agent (Antigravity) otaq rezerv etmək istəyir. Birbaşa bazaya getmir — <b>MCP protokolu</b> ilə Node.js serverə müraciət edir.</p>
+    <p>Server girişi <b>Zod</b> ilə yoxlayır → biznes məntiqi otağın boş olduğunu yoxlayır → <b>PostgreSQL</b>-ə transaction ilə yazır → <b>yalnız commit uğurlu olduqdan sonra</b> <code>booking.created</code> webhook-u göndərilir.</p>
+    <div class="tip"><b>İki əsas qayda:</b><br>1. Eyni otaq eyni tarixə iki dəfə satılmır (kod + baza constraint).<br>2. Webhook heç vaxt commit-dən əvvəl getmir.</div>`},
+  host:{h:"MCP Host — Antigravity",b:`
+    <p><b>Antigravity</b> — AI agentin işlədiyi mühit. <b>MCP Host</b> agenti işlədən proqramdır, içində serverə qoşulan <b>MCP Client</b> var.</p>
+    <p>Agent rezervasiyanın necə edildiyini bilmir — serverdən hansı <b>tool</b>-ların olduğunu soruşur və onları çağırır.</p>
+    <div class="tip">Nümunə: istifadəçi yazır "1–3 dekabr üçün room_001-i rezerv et" → agent bunu <code>book_room</code> tool çağırışına çevirir.</div>`},
+  proto:{h:"MCP Protokolu",b:`
+    <p>MCP (Model Context Protocol) — agent ilə server arasında JSON-RPC əsaslı standart dil.</p>
+    <table><tr><th>Metod</th><th>Nə edir</th></tr>
+    <tr><td><code>tools/list</code></td><td>"Hansı alətlərin var?" — tool adları, təsvirləri, input schema-ları</td></tr>
+    <tr><td><code>tools/call</code></td><td>"Bu aləti işə sal" — məs. <code>book_room({room_id, check_in, check_out})</code></td></tr></table>`},
+  server:{h:"Node.js MCP Server",b:`
+    <table>
+    <tr><td><b>Transport</b></td><td>Mesajın necə gəldiyi: <code>stdio</code> (lokal proses) və ya HTTP/SSE</td></tr>
+    <tr><td><b>Routing</b></td><td>Tool adına görə düzgün handler-ə ötürmək (<code>book_room</code> → Book Service)</td></tr>
+    <tr><td><b>Zod Validation</b></td><td>Parametrləri yoxlamaq: tarix formatı, <code>check_out &gt; check_in</code>, boş ID yoxdur</td></tr></table>
+    <div class="tip">Zod = qapıdakı mühafizəçi. Səhv giriş biznes məntiqinə <b>heç çatmır</b>.</div>`},
+  biz:{h:"Business Logic Service",b:`<p>Serverin "beyni". İki alt servisdən ibarətdir: <b>Book Service</b> (rezervasiyanı başladır) və <b>Availability Service</b> (double booking-in qarşısını alır). Alt qutulara klik et.</p>`},
+  book:{h:"Book Service — Initiate Bookings",b:`
+    <p>Rezervasiyanı başladır: otağı tapır, müştərini tapır/yaradır, <code>Bookings</code> qeydini hazırlayır və transaction içində yazır.</p>
+    <p>Şəkildə buradan bazaya <b>Query Rooms</b> oxu gedir — otaq məlumatını oxumaq (SELECT).</p>`},
+  avail:{h:"Availability Service — Double booking qorunması",b:`
+    <p>Seçilən tarixlərdə otağın boş olub-olmadığını yoxlayır.</p>
+    <p><b>Overlap qaydası:</b></p>
+    <pre>yeni.check_in  &lt; mövcud.check_out
+VƏ
+yeni.check_out &gt; mövcud.check_in</pre>
+    <p>Hər ikisi doğrudursa → tarixlər üst-üstə düşür → <b>rədd</b>.</p>
+    <div class="tip">Nümunə: mövcud 1–3 dekabr. Yeni 2–4 dekabr → overlap ✗. Yeni 3–5 dekabr → overlap yoxdur ✓ (3-ü səhər çıxış, axşam giriş).</div>`},
+  tx:{h:"Query Rooms · DB Transaction (Commit)",b:`
+    <p><b>Query Rooms</b> — otaqları və mövcud rezervasiyaları oxumaq.</p>
+    <p><b>DB Transaction (Commit)</b> — rezervasiya bir transaction içində yazılır: ya hamısı (<b>commit</b>), ya heç nə (<b>rollback</b>). Yarımçıq vəziyyət olmur.</p>`},
+  db:{h:"Neon PostgreSQL + Prisma",b:`
+    <p><b>Neon</b> — bulud PostgreSQL. <b>Prisma</b> — Node.js üçün tip-təhlükəsiz ORM.</p>
+    <table><tr><td><code>Rooms</code></td><td>Otaqlar</td></tr><tr><td><code>Customers</code></td><td>Müştərilər</td></tr>
+    <tr><td><code>Bookings</code></td><td>Rezervasiyalar</td></tr><tr><td><code>WebhookEvents</code></td><td>Göndəriləcək / göndərilmiş hadisələr</td></tr></table>
+    <p><b>DB-Level Double Booking Constraint</b> — bazanın özü üst-üstə düşən tarixləri qadağan edir:</p>
+    <pre>EXCLUDE USING gist (
+  room_id WITH =,
+  daterange(check_in, check_out) WITH &amp;&amp;
+)</pre>
+    <div class="tip"><b>Niyə həm kodda, həm bazada?</b> Race condition. İki sorğu eyni anda gəlir → hər ikisi "boşdur" görür → hər ikisi yazmaq istəyir. Kod bunu tuta bilmir, baza constraint-i ikincini rədd edir.</div>`},
+  after:{h:"ONLY after successful DB Commit",b:`
+    <p>Webhook <b>yalnız commit uğurlu olduqdan sonra</b> yaradılır.</p>
+    <p>Əvvəl göndərsəydik və transaction rollback olsaydı, xarici sistem <b>mövcud olmayan rezervasiya</b> haqqında xəbər alardı ("phantom event").</p>
+    <div class="tip"><code>WebhookEvents</code> cədvəli hadisəni bazada saxlayır — göndərmə alınmasa, təkrar cəhd etmək olur (Outbox pattern).</div>`},
+  wh:{h:"Webhook Service",b:`<p>Commit-dən sonra <code>booking.created</code> hadisə obyektini qurur və receiver-ə göndərir (HTTP POST).</p>`},
+  recv:{h:"Simulated Webhook Receiver",b:`
+    <p>Real xarici sistemi təqlid edən qəbuledici.</p>
+    <table><tr><td><b>Local event log</b></td><td>Hər gələn hadisəni loga yazır</td></tr>
+    <tr><td><b>Payload verification</b></td><td>Lazımi sahələr var, imza (HMAC) uyğundur — saxta deyil</td></tr></table>
+    <p>Məqsəd: <i>etibarlı hadisə yaradılması və çatdırılması — yalnız uğurlu rezervasiyadan sonra.</i></p>`},
+  payload:{h:"booking.created payload",b:`
+    <table><tr><th>Sahə</th><th>Mənası</th></tr>
+    <tr><td><code>event_id</code></td><td>Unikal ID — eyni hadisə iki dəfə emal olunmasın (idempotency)</td></tr>
+    <tr><td><code>event_type</code></td><td>Hadisənin növü</td></tr>
+    <tr><td><code>booking_id</code></td><td>Hansı rezervasiya</td></tr>
+    <tr><td><code>room_id</code></td><td>Hansı otaq</td></tr>
+    <tr><td><code>customer_id</code></td><td>Hansı müştəri</td></tr>
+    <tr><td><code>created_at</code></td><td>Vaxt (UTC, ISO-8601)</td></tr></table>`}
+};
+
+const STEPS = ["host","proto","server","biz","avail","book","tx","db","after","wh","recv","payload"];
+</script>
+<script>
+// ---------- render (eyni kod hər iki faylda) ----------
+const d = document.getElementById("diagram"), panel = document.getElementById("panel");
+const nodeHTML = n => `<div class="node ${n.c||""} ${n.code?"code":""}" data-id="${n.id}">${n.t?`<b>${n.t}</b>`:""}<small>${n.s||""}</small></div>`;
+d.innerHTML = ROWS.map(r=>{
+  if ("arrow" in r) return `<div class="arrow"><div></div><div class="a" ${r.id?`data-id="${r.id}" style="cursor:pointer"`:""}>${r.arrow?`<span class="lbl">${r.arrow}</span>`:""}</div><div></div></div>`;
+  const main = r.group
+    ? `<div class="group" data-id="${r.group.id}"><b>${r.group.t}</b><div class="kids">${r.group.kids.map(nodeHTML).join("")}</div></div>`
+    : r.nodes.map(nodeHTML).join("");
+  const side = s => s ? `<div class="side ${s.pos}">${s.pos==="r"?`<span class="link"></span>${nodeHTML(s)}`:`${nodeHTML(s)}<span class="link"></span>`}</div>` : `<div></div>`;
+  const l = r.side&&r.side.pos==="l"?r.side:null, rt = r.side&&r.side.pos==="r"?r.side:null;
+  return `<div class="row">${side(l)}<div class="main">${main}</div>${side(rt)}</div>`;
+}).join("");
+
+let cur = -1, timer = null;
+function show(id){
+  document.querySelectorAll(".active").forEach(e=>e.classList.remove("active"));
+  const el = d.querySelector(`[data-id="${id}"]`);
+  if (el){ el.classList.add("active"); el.scrollIntoView({block:"nearest",behavior:"smooth"}); }
+  const i = STEPS.indexOf(id); if (i>=0) cur = i;
+  const info = INFO[id];
+  panel.innerHTML = (i>=0?`<div class="step">Addım ${i+1} / ${STEPS.length}</div>`:"") + `<h2>${info.h}</h2>${info.b}`;
+}
+d.addEventListener("click", e=>{
+  const t = e.target.closest("[data-id]"); if(!t) return;
+  e.stopPropagation(); stop(); show(t.dataset.id);
+});
+function stop(){ clearInterval(timer); timer=null; document.getElementById("play").textContent="▶ Axını göstər"; }
+document.getElementById("next").onclick = ()=>{ stop(); show(STEPS[Math.min(cur+1,STEPS.length-1)]); };
+document.getElementById("prev").onclick = ()=>{ stop(); show(STEPS[Math.max(cur-1,0)]); };
+document.getElementById("ovw").onclick = ()=>{ stop(); cur=-1; document.querySelectorAll(".active").forEach(e=>e.classList.remove("active")); show("overview"); };
+document.getElementById("play").onclick = function(){
+  if (timer) return stop();
+  this.textContent = "⏸ Dayandır";
+  cur = -1; show(STEPS[0]);
+  timer = setInterval(()=>{ if (cur>=STEPS.length-1) return stop(); show(STEPS[cur+1]); }, 3200);
+};
+document.addEventListener("keydown", e=>{ if(e.key==="ArrowRight") document.getElementById("next").click(); if(e.key==="ArrowLeft") document.getElementById("prev").click(); });
+show("overview");
+</script>
+</body>
+</html>
