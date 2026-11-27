@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hotel Booking MCP — Ayağa Kaldırma & Deploy Rehberi</title>
+<style>
+  :root{--bg:#f6f6f3;--card:#fff;--ink:#1c1c1e;--mute:#62626a;--line:#dcdcd6;--accent:#2563eb;--ok:#15803d;--warn:#b45309;--code:#f0f0ec}
+  @media (prefers-color-scheme:dark){:root{--bg:#131315;--card:#1d1d21;--ink:#ececec;--mute:#a3a3ab;--line:#34343a;--accent:#6ea0ff;--ok:#4ade80;--warn:#fbbf24;--code:#26262b}}
+  *{box-sizing:border-box}
+  body{margin:0;font:15.5px/1.65 system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}
+  .layout{display:grid;grid-template-columns:250px minmax(0,1fr);max-width:1180px;margin:0 auto}
+  @media (max-width:860px){.layout{grid-template-columns:1fr}nav{position:static!important;height:auto!important;border:0!important}}
+  nav{position:sticky;top:0;height:100vh;overflow:auto;padding:28px 18px;border-right:1px solid var(--line)}
+  nav b{display:block;font-size:13px;color:var(--mute);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px}
+  nav a{display:block;padding:6px 10px;border-radius:7px;color:var(--ink);text-decoration:none;font-size:14.5px}
+  nav a:hover{background:var(--code)}
+  nav a span{color:var(--mute);margin-right:6px;font-variant-numeric:tabular-nums}
+  main{padding:32px 40px 80px;max-width:860px}
+  @media (max-width:860px){main{padding:20px}}
+  h1{font-size:28px;line-height:1.25;margin:0 0 6px}
+  .lead{color:var(--mute);margin:0 0 26px}
+  section{margin:0 0 44px;scroll-margin-top:20px}
+  h2{font-size:21px;margin:0 0 12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+  h3{font-size:16.5px;margin:22px 0 8px}
+  code{font:13.5px ui-monospace,Consolas,monospace;background:var(--code);padding:1px 6px;border-radius:5px}
+  .cmd{position:relative;margin:10px 0 14px}
+  pre{font:13.5px/1.55 ui-monospace,Consolas,monospace;background:var(--code);border:1px solid var(--line);border-radius:10px;padding:13px 15px;overflow:auto;margin:0}
+  pre .c{color:var(--mute)}
+  .copy{position:absolute;top:7px;right:7px;font:12px system-ui;padding:3px 9px;border-radius:6px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;opacity:.75}
+  .copy:hover{opacity:1}
+  table{border-collapse:collapse;width:100%;margin:10px 0 16px;font-size:14.5px}
+  th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+  th{background:var(--code);font-weight:600}
+  .box{border-radius:10px;padding:12px 16px;margin:14px 0;border:1px solid var(--line);background:var(--card)}
+  .box.ok{border-left:4px solid var(--ok)} .box.warn{border-left:4px solid var(--warn)} .box.info{border-left:4px solid var(--accent)}
+  .box b:first-child{display:block;margin-bottom:2px}
+  ol.steps{padding-left:0;list-style:none;counter-reset:s}
+  ol.steps>li{counter-increment:s;position:relative;padding:2px 0 14px 40px}
+  ol.steps>li::before{content:counter(s);position:absolute;left:0;top:1px;width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;font-weight:600;display:grid;place-items:center}
+  .flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:14px 0;font-size:14px}
+  .flow span{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:7px 11px}
+  .flow i{font-style:normal;color:var(--mute)}
+  .tabs{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 0}
+  .tabs button{font:inherit;font-size:14px;padding:6px 13px;border-radius:8px 8px 0 0;border:1px solid var(--line);border-bottom:0;background:var(--code);color:var(--ink);cursor:pointer}
+  .tabs button.on{background:var(--card);font-weight:600}
+  .tab{display:none;border:1px solid var(--line);border-radius:0 10px 10px 10px;padding:4px 16px 8px;background:var(--card)}
+  .tab.on{display:block}
+  a{color:var(--accent)}
+  .muted{color:var(--mute);font-size:14px}
+</style>
+</head>
+<body>
+<div class="layout">
+<nav>
+  <b>İçindekiler</b>
+  <a href="#ozet"><span>0</span>Proje 1 dakikada</a>
+  <a href="#lokal"><span>1</span>Lokalde ayağa kaldırma</a>
+  <a href="#render"><span>2</span>Backend → Render</a>
+  <a href="#netlify"><span>3</span>Frontend → Netlify</a>
+  <a href="#guncelle"><span>4</span>Sonraki deploy'lar</a>
+  <a href="#mcp"><span>5</span>MCP olarak kullanmak</a>
+  <a href="#sorun"><span>6</span>Sorun giderme</a>
+  <a href="#ozetkart"><span>★</span>Kopya kağıdı</a>
+</nav>
+<main>
+  <h1>Hotel Booking MCP — Ayağa Kaldırma & Deploy Rehberi</h1>
+  <p class="lead">Repo: <code>bbaymistery/hotel_mcp_2_updated</code> · Canlı backend: <code>https://hootel-booking-mcp-server.onrender.com</code><br>
+  28 Kasım 2026'da kontrol edildi: <code>/api/health</code> → <b>ok</b>, veritabanı <b>connected</b>, <code>/mcp</code> → <code>check_availability</code> ve <code>book_room</code> tool'larını döndürüyor.</p>
+
+  <!-- 0 -->
+  <section id="ozet">
+    <h2>0 · Proje 1 dakikada</h2>
+    <p>Projede <b>iki ayrı uygulama</b> var. İkisi ayrı ayrı çalışır ve ayrı yerlere deploy edilir:</p>
+    <table>
+      <tr><th></th><th>Backend (kök klasör)</th><th>Frontend (<code>client/</code>)</th></tr>
+      <tr><td>Ne</td><td>Express REST API + <b>MCP server</b> (<code>/mcp</code>) + Gemini chat</td><td>React 19 + Vite arayüzü</td></tr>
+      <tr><td>Lokal port</td><td><code>3001</code></td><td><code>3000</code></td></tr>
+      <tr><td>Nereye deploy</td><td><b>Render</b> (sürekli çalışan Node sunucusu)</td><td><b>Netlify</b> (statik dosyalar)</td></tr>
+      <tr><td>Veritabanı</td><td colspan="2">Neon PostgreSQL — sadece backend bağlanır (<code>DATABASE_URL</code>)</td></tr>
+    </table>
+    <div class="flow">
+      <span>Tarayıcı</span><i>→</i><span>Netlify (React)</span><i>→ /api/* →</i><span>Render (Express)</span><i>→</i><span>Neon PostgreSQL</span>
+    </div>
+    <div class="flow">
+      <span>AI agent (Claude / Cursor / Antigravity)</span><i>→ /mcp →</i><span>Render (Express)</span><i>→</i><span>Neon PostgreSQL</span>
+    </div>
+    <div class="box info"><b>Önemli fikir</b>Frontend tek başına hiçbir şey bilmez. Odalar, rezervasyonlar, chat hepsi backend'den gelir. Yani client açılıyor ama oda listesi boşsa → backend çalışmıyordur.</div>
+  </section>
+
+  <!-- 1 -->
+  <section id="lokal">
+    <h2>1 · Lokalde ayağa kaldırma</h2>
+
+    <h3>Gereken</h3>
+    <p>Node.js <b>22</b> (sende <code>v22.23.3</code> kurulu) ve kök klasörde bir <code>.env</code> dosyası. Sende <code>.env</code> zaten var. Şu anahtarları içermeli:</p>
+    <div class="cmd"><pre>DATABASE_URL="postgresql://...neon.tech/neondb?sslmode=require"   <span class="c"># zorunlu</span>
+GEMINI_API_KEY="..."                                              <span class="c"># sadece chat widget için</span>
+GEMINI_MODEL="gemini-2.5-flash"                                   <span class="c"># opsiyonel</span>
+PORT=3001                                                         <span class="c"># opsiyonel, varsayılan 3001</span></pre></div>
+
+    <h3>İlk kurulum (bir kere)</h3>
+    <ol class="steps">
+      <li>Backend bağımlılıkları. Bu komut sonunda otomatik olarak <code>prisma generate</code> da çalışır.
+        <div class="cmd"><pre>cd C:\Users\User\Desktop\hootel-booking-mcp-server
+npm install</pre></div></li>
+      <li>Client bağımlılıkları:
+        <div class="cmd"><pre>npm install --prefix client</pre></div></li>
+      <li><b>Sadece yeni / boş bir veritabanıysa</b> tabloları oluştur. Senin Neon DB'nde tablolar zaten var, bunu atlayabilirsin.
+        <div class="cmd"><pre>npm run db:migrate</pre></div>
+        <p class="muted">Seed (örnek odalar) gerekmez: sunucu açılırken oda tablosu boşsa odaları kendisi ekler.</p></li>
+    </ol>
+
+    <h3>Her gün çalıştırma — 2 terminal</h3>
+    <ol class="steps">
+      <li><b>Terminal 1 — backend</b> (build gerektirmez, TypeScript'i direkt çalıştırır):
+        <div class="cmd"><pre>npm run start:dev</pre></div>
+        Kontrol: tarayıcıda <a href="http://localhost:3001/api/health">http://localhost:3001/api/health</a> → <code>"status":"ok"</code>, <code>"database":"connected"</code></li>
+      <li><b>Terminal 2 — frontend</b>:
+        <div class="cmd"><pre>cd client
+npm run dev</pre></div>
+        Aç: <a href="http://localhost:3000">http://localhost:3000</a>. Vite, <code>/api</code> isteklerini otomatik olarak <code>localhost:3001</code>'e yönlendirir (<code>client/vite.config.ts</code>).</li>
+    </ol>
+    <div class="box warn"><b>README'de iki yanlış var</b>README client için <code>5173</code> portunu yazıyor ama <code>vite.config.ts</code> içinde port <b>3000</b>. Ayrıca "Option B"de stdio MCP için <code>npm start</code> yazıyor. Aslında <code>npm start</code> HTTP API'yi başlatır, stdio MCP server'ı <code>npm run start:mcp</code> başlatır.</div>
+
+    <h3>Kısayol: backend'i hiç çalıştırmadan client'ı canlı Render'a bağla</h3>
+    <p><code>client/.env.local</code> dosyası oluştur. Bu dosya git'e gitmez (<code>.gitignore</code> içinde <code>.env.*</code> var).</p>
+    <div class="cmd"><pre>VITE_API_BASE_URL=https://hootel-booking-mcp-server.onrender.com</pre></div>
+    <p>Sonra sadece <code>cd client && npm run dev</code>. Backend'de CORS açık olduğu için doğrudan çalışır. Lokal backend'e geri dönmek için dosyayı sil.</p>
+
+    <h3>Production gibi çalıştırmak (Render'ın yaptığının aynısı)</h3>
+    <div class="cmd"><pre>npm run build      <span class="c"># prisma generate + tsc → dist/</span>
+npm start          <span class="c"># node dist/src/api/server.js</span></pre></div>
+  </section>
+
+  <!-- 2 -->
+  <section id="render">
+    <h2>2 · Backend → Render</h2>
+    <p>Bu kısım <b>zaten yapılmış ve çalışıyor</b>. Aşağısı, sıfırdan tekrar kurman gerekirse ya da ayarları kontrol etmek istersen diye.</p>
+    <ol class="steps">
+      <li><a href="https://dashboard.render.com">dashboard.render.com</a> → <b>New +</b> → <b>Web Service</b></li>
+      <li><b>Connect a repository</b> → GitHub → <code>bbaymistery/hotel_mcp_2_updated</code></li>
+      <li>Ayarlar:
+        <table>
+          <tr><th>Alan</th><th>Değer</th></tr>
+          <tr><td>Name</td><td><code>hootel-booking-mcp-server</code> (URL bu isimden çıkar)</td></tr>
+          <tr><td>Branch</td><td><code>main</code></td></tr>
+          <tr><td>Root Directory</td><td><i>boş bırak</i> (kök klasör)</td></tr>
+          <tr><td>Runtime</td><td>Node</td></tr>
+          <tr><td>Build Command</td><td><code>npm install && npm run build</code></td></tr>
+          <tr><td>Start Command</td><td><code>npm start</code></td></tr>
+          <tr><td>Instance Type</td><td>Free (yeterli)</td></tr>
+        </table></li>
+      <li><b>Environment Variables</b> bölümüne ekle:
+        <table>
+          <tr><th>Key</th><th>Value</th></tr>
+          <tr><td><code>DATABASE_URL</code></td><td>Neon connection string (lokaldeki <code>.env</code>'deki ile aynı)</td></tr>
+          <tr><td><code>GEMINI_API_KEY</code></td><td>Gemini anahtarın</td></tr>
+          <tr><td><code>GEMINI_MODEL</code></td><td><code>gemini-2.5-flash</code> (opsiyonel)</td></tr>
+          <tr><td><code>NODE_VERSION</code></td><td><code>22</code></td></tr>
+        </table>
+        <p class="muted"><code>PORT</code> ekleme, Render kendisi verir ve kod <code>process.env.PORT</code>'u okuyor. <code>NODE_ENV=production</code> da <b>ekleme</b>: build sırasında devDependencies (TypeScript) atlanır ve <code>tsc</code> bulunamaz.</p></li>
+      <li><b>Advanced</b> → Health Check Path: <code>/api/health</code></li>
+      <li><b>Create Web Service</b>. İlk build birkaç dakika sürer. Bitince test et:
+        <div class="cmd"><pre>https://hootel-booking-mcp-server.onrender.com/api/health</pre></div></li>
+    </ol>
+    <div class="box warn"><b>Free plan uyuyor</b>15 dakika istek gelmezse sunucu uykuya geçer. İlk istek <b>30–60 saniye</b> sürebilir. Sonrası hızlıdır. Netlify sitesi ya da MCP ilk denemede "timeout" verirse, health URL'ini bir kez açıp sunucuyu uyandır, sonra tekrar dene.</div>
+    <div class="box info"><b>Veritabanı şeması değişirse</b>Render migration'ı otomatik çalıştırmaz. <code>prisma/schema.prisma</code>'yı değiştirdiysen ve yeni bir migration eklediysen, lokalden bir kere <code>npm run db:migrate</code> çalıştır (aynı Neon DB'ye gider). Ya da Render'da Build Command'ı <code>npm install && npm run build && npm run db:migrate</code> yap.</div>
+  </section>
+
+  <!-- 3 -->
+  <section id="netlify">
+    <h2>3 · Frontend → Netlify</h2>
+    <p>Render'dan sonraki adım bu. Netlify'ın tüm ayarı <b>repoda zaten hazır</b>: kökteki <code>netlify.toml</code> dosyası.</p>
+    <div class="cmd"><pre>[build]
+  base    = "client"          <span class="c"># client klasöründe çalış</span>
+  publish = "dist"            <span class="c"># vite build çıktısı</span>
+  command = "npm run build"
+
+[[redirects]]                 <span class="c"># /api/* isteklerini Render'a ilet</span>
+  from = "/api/*"
+  to   = "https://hootel-booking-mcp-server.onrender.com/api/:splat"
+  status = 200
+
+[[redirects]]                 <span class="c"># React SPA: her yolu index.html'e ver</span>
+  from = "/*"
+  to   = "/index.html"
+  status = 200</pre></div>
+    <p>Yani tarayıcı <code>netlify-siten.app/api/rooms</code> istediğinde Netlify bunu arka planda Render'a iletir. Bu yüzden client'ta Render URL'i yazmana ve CORS ile uğraşmana gerek kalmaz.</p>
+
+    <h3>Siteyi kurmak (ilk defa / tekrar)</h3>
+    <ol class="steps">
+      <li><a href="https://app.netlify.com">app.netlify.com</a> → <b>Add new site</b> → <b>Import an existing project</b></li>
+      <li><b>GitHub</b> → <code>bbaymistery/hotel_mcp_2_updated</code></li>
+      <li>Build ayarları ekranı <code>netlify.toml</code>'dan otomatik dolar: Base <code>client</code>, Build <code>npm run build</code>, Publish <code>client/dist</code>. <b>Dokunma.</b></li>
+      <li>Environment variable <b>gerekmez</b>. <code>VITE_API_BASE_URL</code>'i boş bırak ki istekler redirect üzerinden gitsin.</li>
+      <li><b>Deploy</b>. Bitince <code>https://&lt;site-adın&gt;.netlify.app</code> açılır. İstersen <b>Site configuration → Change site name</b> ile adı değiştirebilirsin.</li>
+    </ol>
+    <div class="box warn"><b>Render URL'i değişirse</b>Render servisini farklı bir isimle yeniden kurduysan, yeni URL'i <b>iki yerde</b> güncelle: <code>netlify.toml</code> ve <code>client/public/_redirects</code>. Sonra push et.</div>
+    <div class="box info"><b>Neden iki dosya?</b><code>netlify.toml</code> asıl ayar. <code>client/public/_redirects</code> yedek: biri <code>client/dist</code> klasörünü Netlify'a elle sürükleyip bırakırsa (drag & drop deploy) o zaman da redirect çalışsın diye.</div>
+  </section>
+
+  <!-- 4 -->
+  <section id="guncelle">
+    <h2>4 · Sonraki deploy'lar — "unuttuğun kısım"</h2>
+    <p>Kurulum bir kere yapılır. Sonrasında her deploy <b>sadece bir git push</b>:</p>
+    <div class="cmd"><pre>git add .
+git commit -m "değişiklik açıklaması"
+git push origin main</pre></div>
+    <table>
+      <tr><th>Push'tan sonra</th><th>Ne olur</th><th>Nerede izlersin</th></tr>
+      <tr><td>Render</td><td>Otomatik build + restart (Auto-Deploy açık)</td><td>Render dashboard → servis → <b>Events / Logs</b></td></tr>
+      <tr><td>Netlify</td><td>Otomatik client build + yayın</td><td>Netlify → site → <b>Deploys</b></td></tr>
+    </table>
+    <p>İkisi aynı anda tetiklenir. Sadece client'ı değiştirdiysen Render yine de build yapar. Zararı yok.</p>
+    <h3>Elle tetiklemek</h3>
+    <ul>
+      <li><b>Render:</b> servis sayfası → <b>Manual Deploy → Deploy latest commit</b> (cache sorunu varsa <i>Clear build cache & deploy</i>)</li>
+      <li><b>Netlify:</b> Deploys → <b>Trigger deploy → Deploy site</b></li>
+    </ul>
+    <h3>Deploy sonrası 3 kontrol</h3>
+    <ol class="steps">
+      <li><code>https://hootel-booking-mcp-server.onrender.com/api/health</code> → <code>ok</code> + <code>connected</code></li>
+      <li>Netlify sitesini aç → oda kartları geliyor mu?</li>
+      <li>MCP: aşağıdaki <a href="#mcp">5. bölümdeki</a> Inspector ile <code>tools/list</code> çalışıyor mu?</li>
+    </ol>
+  </section>
+
+  <!-- 5 -->
+  <section id="mcp">
+    <h2>5 · Kendi projende MCP olarak kullanmak</h2>
+    <p>Eklemen gereken URL bu (Streamable HTTP transport):</p>
+    <div class="cmd"><pre>https://hootel-booking-mcp-server.onrender.com/mcp</pre></div>
+    <p class="muted">Sonunda <code>/mcp</code> olmalı. <code>/api/...</code> değil. Bu endpoint <code>src/api/app.ts</code> içinde tanımlı.</p>
+
+    <h3>Bu MCP'nin verdiği tool'lar</h3>
+    <table>
+      <tr><th>Tool</th><th>Parametreler</th><th>Ne yapar</th></tr>
+      <tr><td><code>check_availability</code></td><td><code>check_in</code>, <code>check_out</code> (YYYY-MM-DD), <code>guests</code> (1–10)</td><td>Boş odaları, kapasiteyi ve toplam fiyatı (USD) döner</td></tr>
+      <tr><td><code>book_room</code></td><td><code>room_id</code>, <code>customer_name</code>, <code>customer_email</code>, <code>check_in</code>, <code>check_out</code>, <code>guests</code>, opsiyonel <code>idempotency_key</code></td><td>Rezervasiya yapar (double booking korumalı, commit sonrası webhook)</td></tr>
+    </table>
+
+    <h3>Hangi araçta nasıl eklenir</h3>
+    <div class="tabs" data-group="m">
+      <button class="on" data-t="cc">Claude Code</button>
+      <button data-t="cur">Cursor</button>
+      <button data-t="ag">Antigravity</button>
+      <button data-t="cd">Claude Desktop</button>
+      <button data-t="code">Kendi kodunda (TS)</button>
+    </div>
+    <div class="tab on" id="cc">
+      <p>Projenin klasöründe terminalde:</p>
+      <div class="cmd"><pre>claude mcp add --transport http hotel-booking https://hootel-booking-mcp-server.onrender.com/mcp</pre></div>
+      <p>veya projenin kökünde <code>.mcp.json</code> dosyası (takımla paylaşılır):</p>
+      <div class="cmd"><pre>{
+  "mcpServers": {
+    "hotel-booking": {
+      "type": "http",
+      "url": "https://hootel-booking-mcp-server.onrender.com/mcp"
+    }
+  }
+}</pre></div>
+      <p>Kontrol: Claude Code içinde <code>/mcp</code> yaz → <code>hotel-booking</code> <i>connected</i> görünmeli.</p>
+    </div>
+    <div class="tab" id="cur">
+      <p>Projede <code>.cursor/mcp.json</code> (sadece o proje) veya <code>~/.cursor/mcp.json</code> (tüm projeler):</p>
+      <div class="cmd"><pre>{
+  "mcpServers": {
+    "hotel-booking": {
+      "url": "https://hootel-booking-mcp-server.onrender.com/mcp"
+    }
+  }
+}</pre></div>
+      <p>Settings → MCP ekranında yeşil nokta ve 2 tool görünmeli.</p>
+    </div>
+    <div class="tab" id="ag">
+      <p>Agent paneli → <b>⋯</b> → <b>MCP Servers</b> → <b>Manage MCP Servers</b> → <b>View raw config</b> (<code>mcp_config.json</code>):</p>
+      <div class="cmd"><pre>{
+  "mcpServers": {
+    "hotel-booking": {
+      "serverUrl": "https://hootel-booking-mcp-server.onrender.com/mcp"
+    }
+  }
+}</pre></div>
+      <p class="muted">Antigravity uzak sunucular için <code>url</code> değil <code>serverUrl</code> anahtarını kullanıyor. Kaydettikten sonra listeyi yenile.</p>
+    </div>
+    <div class="tab" id="cd">
+      <p><b>Settings → Connectors → Add custom connector</b> → URL alanına:</p>
+      <div class="cmd"><pre>https://hootel-booking-mcp-server.onrender.com/mcp</pre></div>
+      <p>Alternatif: lokal stdio versiyonu (internet / Render gerekmez, direkt Neon'a bağlanır). Önce <code>npm run build</code>, sonra <code>%APPDATA%\Claude\claude_desktop_config.json</code>:</p>
+      <div class="cmd"><pre>{
+  "mcpServers": {
+    "hotel-booking-local": {
+      "command": "node",
+      "args": ["C:/Users/User/Desktop/hootel-booking-mcp-server/dist/src/index.js"],
+      "env": { "DATABASE_URL": "postgresql://...neon.tech/neondb?sslmode=require" }
+    }
+  }
+}</pre></div>
+    </div>
+    <div class="tab" id="code">
+      <p>Kendi Node/TS uygulamandan MCP client olarak bağlanmak (<code>npm i @modelcontextprotocol/sdk</code>):</p>
+      <div class="cmd"><pre>import { Client } from '@modelcontextprotocol/sdk/client/index.js';
+import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
+
+const client = new Client({ name: 'my-app', version: '1.0.0' });
+await client.connect(new StreamableHTTPClientTransport(
+  new URL('https://hootel-booking-mcp-server.onrender.com/mcp')
+));
+
+const { tools } = await client.listTools();          // tools/list
+console.log(tools.map(t =&gt; t.name));                // ['check_availability', 'book_room']
+
+const res = await client.callTool({                  // tools/call
+  name: 'check_availability',
+  arguments: { check_in: '2026-12-10', check_out: '2026-12-12', guests: 2 }
+});
+console.log(res.content);</pre></div>
+      <p class="muted">Projedeki <code>src/services/mcp-client.service.ts</code> aynı şeyi yapıyor (Gemini chat için), ama orada InMemory transport kullanılıyor.</p>
+    </div>
+
+    <h3>Sonra agent'a sorabileceklerin</h3>
+    <div class="cmd"><pre>Is there a room available from 2026-12-10 to 2026-12-12 for 2 guests?
+→ agent check_availability çağırır
+
+Book the cheapest one for Ali Veli, ali@example.com
+→ agent book_room çağırır</pre></div>
+
+    <h3>Herhangi bir agent olmadan test: MCP Inspector</h3>
+    <div class="cmd"><pre>npx @modelcontextprotocol/inspector</pre></div>
+    <p>Açılan sayfada Transport: <b>Streamable HTTP</b>, URL: <code>https://hootel-booking-mcp-server.onrender.com/mcp</code> → <b>Connect</b> → <b>Tools → List Tools</b> → bir tool seç, parametreleri gir, <b>Run</b>.</p>
+
+    <div class="box warn"><b>Güvenlik notu</b><code>/mcp</code> endpoint'inde kimlik doğrulama (auth) yok. URL'i bilen herkes rezervasiyon yapabilir. Demo / portfolyo için sorun değil ama gerçek kullanım için bir API key veya OAuth eklenmeli. Bunu sonra konuşabiliriz.</div>
+  </section>
+
+  <!-- 6 -->
+  <section id="sorun">
+    <h2>6 · Sorun giderme</h2>
+    <table>
+      <tr><th>Belirti</th><th>Sebep</th><th>Çözüm</th></tr>
+      <tr><td>Client açılıyor ama odalar yok / "Failed to fetch"</td><td>Backend çalışmıyor</td><td>Terminal 1'de <code>npm run start:dev</code> çalışıyor mu? Ya da <code>client/.env.local</code> ile Render'a bağla</td></tr>
+      <tr><td>Netlify'da ilk istek çok yavaş / 502</td><td>Render free plan uykudaydı</td><td>30–60 sn bekle, health URL'ini aç, yenile</td></tr>
+      <tr><td><code>"database":"disconnected"</code></td><td><code>DATABASE_URL</code> yanlış / eksik veya Neon projesi askıda</td><td>Render → Environment'ı kontrol et. Neon dashboard'da proje aktif mi bak</td></tr>
+      <tr><td>Render build: <code>tsc: not found</code></td><td><code>NODE_ENV=production</code> ayarlı, devDependencies kurulmadı</td><td>O env'i sil veya build komutunu <code>npm install --include=dev && npm run build</code> yap</td></tr>
+      <tr><td>Render build: Prisma client hatası</td><td>Generate edilmemiş</td><td><code>npm run build</code> zaten <code>prisma generate</code> içeriyor. Build Command'ı kontrol et</td></tr>
+      <tr><td>MCP: <code>Session not found</code></td><td>Render restart oldu, oturumlar bellekte tutuluyordu ve silindi</td><td>Client'ta MCP bağlantısını yeniden başlat (reconnect)</td></tr>
+      <tr><td>MCP bağlanmıyor, 404</td><td>URL'in sonunda <code>/mcp</code> yok</td><td><code>…onrender.com/mcp</code></td></tr>
+      <tr><td>Chat widget cevap vermiyor</td><td><code>GEMINI_API_KEY</code> yok veya kota doldu</td><td>Render env'e ekle. Render Logs'a bak</td></tr>
+    </table>
+  </section>
+
+  <!-- ★ -->
+  <section id="ozetkart">
+    <h2>★ Kopya kağıdı</h2>
+    <div class="cmd"><pre><span class="c"># LOKAL — terminal 1 (backend :3001)</span>
+npm run start:dev
+
+<span class="c"># LOKAL — terminal 2 (frontend :3000)</span>
+cd client && npm run dev
+
+<span class="c"># DEPLOY (Render + Netlify otomatik)</span>
+git push origin main
+
+<span class="c"># KONTROL</span>
+https://hootel-booking-mcp-server.onrender.com/api/health
+
+<span class="c"># MCP URL</span>
+https://hootel-booking-mcp-server.onrender.com/mcp</pre></div>
+  </section>
+</main>
+</div>
+<script>
+  document.querySelectorAll('.cmd').forEach(c=>{
+    const b=document.createElement('button');b.className='copy';b.textContent='Kopyala';
+    b.onclick=()=>{const t=c.querySelector('pre').innerText.split('\n').filter(l=>!/^\s*#/.test(l)).join('\n').replace(/\s+#.*$/gm,'').trim();
+      navigator.clipboard.writeText(t).then(()=>{b.textContent='✓';setTimeout(()=>b.textContent='Kopyala',1200)})};
+    c.appendChild(b);
+  });
+  document.querySelectorAll('.tabs').forEach(g=>g.addEventListener('click',e=>{
+    const btn=e.target.closest('button');if(!btn)return;
+    g.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===btn));
+    let n=g.nextElementSibling;while(n&&n.classList.contains('tab')){n.classList.toggle('on',n.id===btn.dataset.t);n=n.nextElementSibling}
+  }));
+</script>
+</body>
+</html>

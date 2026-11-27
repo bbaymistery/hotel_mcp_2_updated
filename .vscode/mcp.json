@@ -1,0 +1,9 @@
+{
+  "servers": {
+    "hotel-booking": {
+      "type": "http",
+      "url": "https://hootel-booking-mcp-server.onrender.com/mcp"
+    }
+  },
+  "inputs": []
+}
