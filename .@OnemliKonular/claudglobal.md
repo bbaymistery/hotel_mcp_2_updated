@@ -16,8 +16,11 @@
 
 ## Workflow
 - Follow existing patterns in the repo before inventing new ones.
-- Do not write new tests unless I ask for them.
+- Tests: if the project already has tests, update the tests affected by my change and add tests for new behavior, following the project's existing test patterns. If the project has no tests, do not add tests or test setup unless I ask.
+- Never delete, skip or weaken a test just to make it pass; fix the code or tell me why the test is wrong.
 - Before saying "done" or "fixed", run the project's existing checks (typecheck, lint, tests — whichever exist) and show the result.
+- TypeScript: never use `any`, `as any` or `@ts-ignore`. Use `unknown` for truly unknown data and narrow it (type guards or zod).
+- Use npm by default. Use yarn or pnpm only if I ask, or if the project already uses it (`yarn.lock` / `pnpm-lock.yaml`).
 
 ## Git
 - Never commit, push or merge unless explicitly asked.
