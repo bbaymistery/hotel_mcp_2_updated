@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="az">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paralel Ajan Düzəni — Worktree, Ticket, CLAUDE.md, Gecə İşi</title>
+<style>
+  :root{--bg:#f6f6f3;--card:#fff;--ink:#1c1c1e;--mute:#62626a;--line:#dcdcd6;--accent:#2563eb;--ok:#15803d;--bad:#b91c1c;--warn:#b45309;--code:#f0f0ec;
+        --a1:#dbeafe;--a2:#dcfce7;--a3:#fef3c7;--a4:#fce7f3}
+  @media (prefers-color-scheme:dark){:root{--bg:#131315;--card:#1d1d21;--ink:#ececec;--mute:#a3a3ab;--line:#34343a;--accent:#6ea0ff;--ok:#4ade80;--bad:#f87171;--warn:#fbbf24;--code:#26262b;
+        --a1:#1e3a5f;--a2:#14532d;--a3:#4a3a0f;--a4:#4a1d38}}
+  *{box-sizing:border-box}
+  body{margin:0;font:15.5px/1.65 system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}
+  .layout{display:grid;grid-template-columns:260px minmax(0,1fr);max-width:1200px;margin:0 auto}
+  @media (max-width:860px){.layout{grid-template-columns:1fr}nav{position:static!important;height:auto!important;border:0!important}}
+  nav{position:sticky;top:0;height:100vh;overflow:auto;padding:28px 18px;border-right:1px solid var(--line)}
+  nav b{display:block;font-size:13px;color:var(--mute);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px}
+  nav a{display:block;padding:6px 10px;border-radius:7px;color:var(--ink);text-decoration:none;font-size:14.5px}
+  nav a:hover{background:var(--code)}
+  nav a span{display:inline-block;width:20px;color:var(--mute)}
+  main{padding:32px 40px 80px;max-width:880px}
+  @media (max-width:860px){main{padding:20px}}
+  h1{font-size:28px;line-height:1.25;margin:0 0 6px}
+  .lead{color:var(--mute);margin:0 0 26px}
+  section{margin:0 0 48px;scroll-margin-top:20px}
+  h2{font-size:21px;margin:0 0 12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+  h3{font-size:16.5px;margin:24px 0 8px}
+  code{font:13.5px ui-monospace,Consolas,monospace;background:var(--code);padding:1px 6px;border-radius:5px}
+  pre{font:13.5px/1.55 ui-monospace,Consolas,monospace;background:var(--code);border:1px solid var(--line);border-radius:10px;padding:13px 15px;overflow:auto;margin:10px 0 14px}
+  pre .c{color:var(--mute)}
+  table{border-collapse:collapse;width:100%;margin:10px 0 16px;font-size:14.5px}
+  th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+  th{background:var(--code);font-weight:600}
+  .box{border-radius:10px;padding:12px 16px;margin:14px 0;border:1px solid var(--line);background:var(--card)}
+  .box.ok{border-left:4px solid var(--ok)} .box.warn{border-left:4px solid var(--warn)} .box.info{border-left:4px solid var(--accent)} .box.bad{border-left:4px solid var(--bad)}
+  .box>b:first-child{display:block;margin-bottom:2px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media (max-width:700px){.two{grid-template-columns:1fr}}
+  .two>div{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 16px}
+  .two h4{margin:0 0 6px;font-size:15px}
+  .bad-t{color:var(--bad)} .ok-t{color:var(--ok)}
+  /* kitchen analogy */
+  .kitchen{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}
+  @media (max-width:700px){.kitchen{grid-template-columns:1fr 1fr}}
+  .kitchen div{border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--card);font-size:14px}
+  .kitchen div b{display:block;font-size:15px;margin-bottom:4px}
+  .kitchen div i{font-style:normal;color:var(--mute);font-size:13px}
+  /* worktree diagram */
+  .wt{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:8px 0 4px}
+  @media (max-width:700px){.wt{grid-template-columns:1fr}}
+  .wt div{border-radius:10px;padding:10px 12px;font:13px/1.5 ui-monospace,Consolas,monospace;border:1px solid var(--line)}
+  .wt div b{font-family:system-ui;font-size:14px;display:block;margin-bottom:2px}
+  .g1{background:var(--a1)} .g2{background:var(--a2)} .g3{background:var(--a3)} .g4{background:var(--a4)}
+  .git{text-align:center;border:2px dashed var(--line);border-radius:10px;padding:10px;font-size:14px;margin-top:4px}
+  ol.steps{padding-left:0;list-style:none;counter-reset:s}
+  ol.steps>li{counter-increment:s;position:relative;padding:2px 0 14px 40px}
+  ol.steps>li::before{content:counter(s);position:absolute;left:0;top:1px;width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;font-weight:600;display:grid;place-items:center}
+  .flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:14px 0;font-size:14px}
+  .flow span{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:7px 11px}
+  .flow i{font-style:normal;color:var(--mute)}
+  .qa{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin:12px 0}
+  .qa .q{font-weight:600;margin-bottom:6px}
+  .muted{color:var(--mute);font-size:14px}
+  a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="layout">
+<nav>
+  <b>Mündəricat</b>
+  <a href="#boyuk"><span>0</span>Böyük şəkil</a>
+  <a href="#worktree"><span>1</span>Git worktree</a>
+  <a href="#ticket"><span>2</span>Ticket formatı</a>
+  <a href="#claudemd"><span>3</span>CLAUDE.md / AGENTS.md</a>
+  <a href="#gece"><span>4</span>Gecə işi: background, /loop</a>
+  <a href="#axin"><span>5</span>Hamısı birlikdə: 1 gün</a>
+  <a href="#hootel"><span>6</span>Hootel üçün demo planı</a>
+  <a href="#musahibe"><span>7</span>Müsahibədə necə danışmaq</a>
+</nav>
+<main>
+  <h1>Paralel Ajan Düzəni</h1>
+  <p class="lead">İş elanındakı "ən önəmli hissə"nin addım-addım izahı. Hər bölmədə əvvəl <b>nədir</b>, sonra <b>niyə lazımdır</b>, sonra <b>necə edilir</b> yazılıb. Nümunələr hootel-booking layihəsindən götürülüb.</p>
+
+  <!-- 0 -->
+  <section id="boyuk">
+    <h2>0 · Böyük şəkil: mətbəx bənzətməsi</h2>
+    <p>Bir restoran mətbəxi təsəvvür et. 4 aşpaz (ajan) eyni anda işləyir. Bunun qaydasında getməsi üçün 4 şey lazımdır:</p>
+    <div class="kitchen">
+      <div class="g1"><b>Ayrı masa</b>Hər aşpazın öz kəsmə taxtası var, bir-birinin yeməyinə toxunmurlar.<br><i>= git worktree</i></div>
+      <div class="g2"><b>Sifariş kartı</b>"2 porsiya plov, duzsuz, 20 dəqiqəyə". Qısa və aydın.<br><i>= ticket</i></div>
+      <div class="g3"><b>Divardakı qaydalar</b>"Əlləri yu, ət ayrı taxtada, menyu belədir". Hər aşpaz gələndə oxuyur.<br><i>= CLAUDE.md / AGENTS.md</i></div>
+      <div class="g4"><b>Gecə növbəsi</b>Sən evdəsən, amma xəmir hazırlanır. Səhər yoxlayırsan.<br><i>= background, /loop</i></div>
+    </div>
+    <p>Sən isə <b>baş aşpazsan</b>: kartları yazırsan, işi bölürsən, sonda hər yeməyi dadıb (code review) masaya buraxırsan (merge). İş elanının əsl soruşduğu budur: <b>"Ajanları idarə edə bilirsənmi?"</b></p>
+    <div class="box info"><b>Antigravity-də etdiyin ilə fərq</b>Antigravity-də bir ajana dizaynı, digərinə API inteqrasiyasını vermək düzgün məntiqdir. Əlavə olunan yalnız budur: hər ajan <b>öz qovluğunda, öz branch-ında</b> işləyir (worktree), işi <b>yazılı kartla</b> alır (ticket) və "bitdi" deyəndə <b>testlər bunu sübut edir</b>.</div>
+  </section>
+
+  <!-- 1 -->
+  <section id="worktree">
+    <h2>1 · Git worktree: hər ajana ayrı masa</h2>
+
+    <h3>Problem: iki ajan eyni qovluqda</h3>
+    <p>Hər iki ajanı <code>hootel-booking-mcp-server</code> qovluğunda işə saldın:</p>
+    <ul>
+      <li>Ajan A (dizayn) <code>client/src/components/RoomCard.tsx</code>-ı yarıya qədər dəyişib.</li>
+      <li>Ajan B (API) həmin anda <code>npm test</code> işlədir. Testlər A-nın <b>yarımçıq</b> kodunu görür və qırmızı olur. B səhvi özündə axtarmağa başlayır, amma səhv onda deyil.</li>
+      <li>B öz işini commit edir. <code>git add .</code> A-nın yarımçıq fayllarını da commit-ə qatır.</li>
+      <li>Biri <code>git checkout</code> ilə branch dəyişsə, <b>hər ikisinin</b> altındakı fayllar dəyişir.</li>
+    </ul>
+    <p>Yəni bir qovluq = bir masa. İki aşpaz bir masada işləyəndə bir-birinə mane olur.</p>
+
+    <h3>Həll: worktree</h3>
+    <p>Əvvəlcə iki anlayışı ayıraq:</p>
+    <table>
+      <tr><th>Branch</th><td>Versiyanın <b>xətti</b>, tarixçədəki ad. Görünmür, sadəcə git-in içində bir göstəricidir.</td></tr>
+      <tr><th>Worktree</th><td>O branch-ın diskdə <b>ayrıca qovluğu</b>. İçində bütün fayllar var, açıb redaktə edə bilərsən.</td></tr>
+    </table>
+    <p>Normalda 1 repo = 1 qovluq = eyni anda 1 branch. <b>Worktree ilə 1 repo = bir neçə qovluq, hər birində fərqli branch, eyni anda.</b> <code>.git</code> tarixçəsi ortaqdır, yəni repo-nu təkrar klonlamırsan. Sadəcə əlavə "iş masaları" açırsan.</p>
+
+    <div class="wt">
+      <div class="g1"><b>Əsas qovluq</b>hootel-booking-mcp-server\<br>branch: main<br><span class="muted">← sən buradasan</span></div>
+      <div class="g2"><b>Ajan A: dizayn</b>hootel-booking-mcp-server-wt-design\<br>branch: agent/design</div>
+      <div class="g3"><b>Ajan B: webhook</b>hootel-booking-mcp-server-wt-webhook\<br>branch: agent/webhook</div>
+    </div>
+    <div class="git">Hamısı <b>eyni</b> <code>.git</code> tarixçəsini paylaşır. Bir qovluqda commit edilən o biri qovluqda dərhal <code>git log agent/...</code> ilə görünür.</div>
+
+    <h3>Əmrlər</h3>
+<pre><span class="c"># yeni masa aç: yeni branch + yeni qovluq, main-dən başlayır</span>
+git worktree add -b agent/design ..\hootel-booking-mcp-server-wt-design main
+
+<span class="c"># hansı masalar var?</span>
+git worktree list
+
+<span class="c"># iş bitdi, merge etdin → masanı yığışdır</span>
+git worktree remove ..\hootel-booking-mcp-server-wt-design
+git branch -d agent/design</pre>
+    <p>Sənin <code>claude-kit</code>-ində bunu bir əmrlə edən hazır skript var: <code>claude-kit/scripts/new-worktree.ps1</code>. O, worktree açır, <code>.env</code>-i ora kopyalayır (çünki <code>.env</code> git-də yoxdur) və nə edəcəyini yazır:</p>
+<pre>.\.@OnemliKonular\claude-kit\scripts\new-worktree.ps1 design
+.\.@OnemliKonular\claude-kit\scripts\new-worktree.ps1 webhook
+<span class="c"># bitəndə:</span>
+.\.@OnemliKonular\claude-kit\scripts\new-worktree.ps1 design -Remove</pre>
+
+    <h3>VS Code-da necə görünür</h3>
+    <ol class="steps">
+      <li>Hər worktree qovluğunu <b>ayrı VS Code pəncərəsində</b> aç: <code>code ..\hootel-booking-mcp-server-wt-design</code>.</li>
+      <li>Hər pəncərədə Claude Code panelini aç (və ya terminalda <code>claude</code> yaz). Hər ajan yalnız öz qovluğunu görür.</li>
+      <li>Hər worktree-də bir dəfə <code>npm install</code> et, çünki <code>node_modules</code> git-də yoxdur.</li>
+      <li>İki ajan eyni anda server işə salırsa, portlar toqquşur (hər ikisi 3001 istəyir). Birində <code>$env:PORT=3002</code> ver.</li>
+    </ol>
+    <div class="box info"><b>Claude Code-un öz worktree dəstəyi</b>Claude Code özü də sessiyanı ayrıca worktree-də aça bilir: terminalda <code>claude -w design</code> (və ya <code>claude --worktree design</code>). Bu, skriptsiz ən qısa yoldur. Bir fərq var: kit-dəki skript <code>.env</code>-i mütləq kopyalayır. <code>-w</code> ilə açanda isə yeni qovluqda <code>.env</code> olub-olmadığını yoxla, yoxdursa əl ilə kopyala.</div>
+
+    <h3>İş bitəndə: masadan mətbəxə</h3>
+    <div class="flow"><span>agent/design branch</span><i>→ sən diff-i oxuyursan →</i><span>Pull Request / <code>git merge</code></span><i>→</i><span>main</span><i>→</i><span>worktree remove</span></div>
+    <div class="box warn"><b>Toqquşmanın qarşısını ticket alır</b>Worktree <b>işləyərkən</b> mane olmağın qarşısını alır. Amma iki ajan eyni faylı dəyişibsə, merge zamanı conflict yenə çıxacaq. Ona görə işi əvvəlcədən <b>fərqli fayllara</b> bölürsən. Bunu ticket-in "Scope" bölməsi edir (növbəti bölmə).</div>
+  </section>
+
+  <!-- 2 -->
+  <section id="ticket">
+    <h2>2 · Ticket formatı: qısa və aydın iş kartı</h2>
+    <p><b>Ticket</b> bir iş tapşırığının yazılı kartıdır. Jira, Linear və GitHub Issues-dakı "task" ilə eyni şeydir. Ajan üçün ticket-in xüsusi qaydaları var:</p>
+    <ul>
+      <li><b>Kiçik:</b> bir ajan bir sessiyada bitirə bilsin (1–3 fayl kod + testlər).</li>
+      <li><b>Aydın:</b> ajan "nə istəyirdi görəsən" deyə təxmin etməsin.</li>
+      <li><b>Yoxlanıla bilən:</b> "bitdi"nin mənası testlə ölçülsün.</li>
+      <li><b>Sərhədli:</b> hansı fayllara toxunacağı və hansılara toxunmayacağı yazılsın. Paralel ajanlar bu sayədə bir-birinin faylına girmir.</li>
+    </ul>
+
+    <h3>Pis və yaxşı nümunə</h3>
+    <div class="two">
+      <div><h4 class="bad-t">✗ Pis</h4>
+        <p>"Webhook-u yaxşılaşdır."</p>
+        <p class="muted">Nəyi yaxşılaşdırım? Hansı faylı? Nə vaxt bitmiş sayılır? Ajan ya çox az edəcək, ya da yarım layihəni yenidən yazacaq.</p></div>
+      <div><h4 class="ok-t">✓ Yaxşı</h4>
+        <p>Aşağıdakı kart: məqsəd, sərhəd, hər biri testlə bağlı qəbul şərtləri və yoxlama əmrləri.</p></div>
+    </div>
+
+<pre># 001 — Webhook retry worker
+
+**Type:** feature
+**Branch / worktree:** agent/webhook-retry
+
+## Goal
+Uğursuz webhook-lar indi yalnız server restart olanda yenidən göndərilir.
+Hər 10 saniyədə PENDING event-ləri yoxlayan bir worker əlavə et.
+
+## Scope
+- Toxunulacaq: `src/services/webhook.service.ts`, `src/api/server.ts`,
+  `tests/integration/outbox-lifecycle.test.ts`
+- Toxunulmayacaq: `client/`, `prisma/migrations/`
+
+## Acceptance criteria (hər biri bir test)
+- [ ] Given next_retry_at keçmiş PENDING event, when worker işləyir,
+      then event DELIVERED olur → tests/integration/outbox-lifecycle.test.ts
+- [ ] Given next_retry_at gələcəkdə, when worker işləyir,
+      then event toxunulmaz qalır → eyni fayl
+- [ ] Given server dayanır, then worker interval təmizlənir (leak yoxdur)
+
+## Verify
+- npx tsc --noEmit
+- npx vitest run tests/integration/outbox-lifecycle.test.ts</pre>
+    <p>Bu şablon artıq səndə var: <code>claude-kit/project/tickets/TEMPLATE.md</code>. Kit-dəki <code>/ticket</code> əmri isə bir cümlədən belə bir kart yaradır:</p>
+<pre>/ticket webhook uğursuz olanda periodik retry worker</pre>
+    <p class="muted">"Given / When / Then" quruluşu belə oxunur: <b>Given</b> başlanğıc vəziyyətdir, <b>When</b> baş verən hadisədir, <b>Then</b> gözlənilən nəticədir. Hər sətir birbaşa bir testə çevrilir.</p>
+  </section>
+
+  <!-- 3 -->
+  <section id="claudemd">
+    <h2>3 · CLAUDE.md / AGENTS.md: divardakı qaydalar</h2>
+    <p>Bu, ajanın <b>hər sessiya başlayanda avtomatik oxuduğu</b> qaydalar faylıdır. Ajan hər dəfə layihəni sıfırdan tanımır. Bu faylı oxuyub dərhal bilir: stack nədir, test necə işə salınır, nəyə toxunmaq qadağandır.</p>
+    <table>
+      <tr><th>Fayl</th><th>Kim oxuyur</th></tr>
+      <tr><td><code>CLAUDE.md</code></td><td>Claude Code</td></tr>
+      <tr><td><code>AGENTS.md</code></td><td>Codex, Cursor, Gemini CLI, Copilot və başqaları (ortaq standart)</td></tr>
+    </table>
+    <p>Məzmun eynidir, yalnız fayl adı fərqlidir. Ən rahat yol budur: qaydaları <code>AGENTS.md</code>-də yaz, <code>CLAUDE.md</code>-yə isə bir sətir əlavə et: <code>@AGENTS.md</code>. Claude onu import edir. Beləcə bütün ajanlar eyni qaydaları oxuyur.</p>
+
+    <h3>İçinə nə yazılır</h3>
+    <table>
+      <tr><th>Bölmə</th><th>Hootel nümunəsi</th></tr>
+      <tr><td>Stack</td><td>Node + TS, Express 5, Prisma 7 / Neon, React 19</td></tr>
+      <tr><td>Əmrlər</td><td>test: <code>npm test</code>, typecheck: <code>npx tsc --noEmit</code></td></tr>
+      <tr><td>Qovluq xəritəsi</td><td>route-lar nazik olsun, məntiq <code>src/services/</code>-də yaşasın</td></tr>
+      <tr><td>Qaydalar</td><td>pul integer sentlə saxlanılsın, float olmasın; hər yeni tool üçün zod schema + test yazılsın</td></tr>
+      <tr><td>Qadağalar</td><td><code>prisma/migrations/</code>-ı əllə dəyişmə; <code>.env</code>-i heç vaxt çap etmə</td></tr>
+    </table>
+    <p>Yazılmayanlar: uzun sənədlər və koddan onsuz da görünən şeylər. 20–60 sətir kifayətdir. Uzun olduqca ajan vacib qaydanı gözdən qaçırır.</p>
+
+    <div class="qa">
+      <div class="q">Sual: Bu qaydaları özüm yazacam, yoxsa şirkət verəcək?</div>
+      <table>
+        <tr><th>Vəziyyət</th><th>Kim yazır</th></tr>
+        <tr><td><b>Öz layihən</b> (hootel-booking)</td><td><b>Sən.</b> Layihə sənindir, qaydaları da sən bilirsən. Səndə artıq yazılmış bir variant var: <code>claude-kit/project/CLAUDE.md</code>. Sadəcə hələ layihənin kökünə kopyalanmayıb.</td></tr>
+        <tr><td><b>İşə girəndən sonra</b>, şirkətin repo-sunda</td><td>Çox vaxt repo-da <b>artıq var</b>, onu komanda yazıb. Sən oxuyursan və ona əməl edirsən. Yeni bir qayda öyrənəndə (məsələn "ajan bu səhvi təkrar edir") PR ilə faylı yeniləyirsən. Fayl canlı sənəddir, hamı yeniləyir.</td></tr>
+        <tr><td>Şirkətdə hələ yoxdursa</td><td>Sən təklif edirsən. Bu, elanın istədiyi "ajan düzənini qura bilən adam" bacarığının özüdür.</td></tr>
+        <tr><td>Müsahibədə</td><td>Öz layihənin CLAUDE.md-sini göstərirsən: "Ajanlarımın qaydaları budur, bu qaydanı ona görə əlavə etdim ki..."</td></tr>
+      </table>
+      <p class="muted" style="margin:6px 0 0">Sıfırdan başlamaq lazımdırsa, Claude Code-da <code>/init</code> əmri kodu oxuyub qaralama CLAUDE.md yaradır. Sonra sən onu düzəldirsən.</p>
+    </div>
+
+    <h3>Üç səviyyə</h3>
+    <table>
+      <tr><th>Yer</th><th>Nə üçün</th><th>Səndə</th></tr>
+      <tr><td><code>C:\Users\User\.claude\CLAUDE.md</code></td><td>Bütün layihələrdə keçərli, şəxsi iş tərzin (məsələn "əvvəl test yaz")</td><td><code>claude-kit/global/CLAUDE.md</code></td></tr>
+      <tr><td>Layihənin kökündə <code>CLAUDE.md</code></td><td>Yalnız bu layihənin qaydaları</td><td><code>claude-kit/project/CLAUDE.md</code></td></tr>
+      <tr><td>Alt qovluqda, məsələn <code>client/CLAUDE.md</code></td><td>Yalnız o hissəyə aid qaydalar (məsələn React qaydaları)</td><td>yoxdur, lazım da deyil</td></tr>
+    </table>
+  </section>
+
+  <!-- 4 -->
+  <section id="gece">
+    <h2>4 · Gecə işi: background, /loop, /schedule</h2>
+    <p>Elan "ajanların gecə də işləyə bildiyini göstər" deyir. Bunun mənası belədir: sən kompüterdən uzaqda olanda iş davam edir, səhər isə yoxlanmış nəticəni görürsən. Bunun üç yolu var, sadədən mürəkkəbə:</p>
+
+    <h3>a) Background: "sən başqa işlə məşğul ol, mən bunu görürəm"</h3>
+    <p>Claude Code uzun bir işi (testlər, build, alt-ajan) arxa planda işlədə bilir. Sən eyni vaxtda başqa şey soruşursan, iş bitəndə xəbər gəlir. Sadəcə belə yaz: <i>"bunu background-da işə sal"</i>. Ən sadə forma isə bu səhifədə gördüyün worktree-lərdir: 3 terminal, 3 ajan, hamısı eyni anda işləyir.</p>
+
+    <h3>b) /loop: "bunu hər X dəqiqədən bir təkrarla"</h3>
+    <p><code>/loop</code> Claude Code-un bir əmridir. Verdiyin tapşırığı müəyyən intervalla təkrar-təkrar işə salır. Saatlı zəngli saat kimi düşün: hər dəfə çalanda ajan oyanır, tapşırığı yerinə yetirir və yenidən gözləməyə keçir.</p>
+<pre><span class="c"># hər 30 dəqiqədən bir: testləri işə sal, qırmızı varsa düzəlt</span>
+/loop 30m npm test işlət; qırmızı test varsa səbəbini tap və düzəlt, commit et
+
+<span class="c"># hər 15 dəqiqədən bir: PR-ı yoxla, CI qırmızıdırsa düzəlt</span>
+/loop 15m açıq PR-ın CI nəticəsinə bax, uğursuzdursa düzəlt və push et
+
+<span class="c"># interval verməsən, ajan tempi özü seçir</span>
+/loop tickets/ qovluğundakı növbəti ticket-i götür, bitir, testləri yaşıl et</pre>
+    <div class="box warn"><b>/loop-un şərti</b>Lokal işləyir: <b>kompüter və Claude Code sessiyası açıq qalmalıdır</b>. Kompüteri söndürsən, loop da dayanır. Gecə üçün ya kompüteri açıq qoyursan, ya da (c) bəndinə keçirsən.</div>
+
+    <h3>c) /schedule: buludda, kompüter sönülü olsa belə</h3>
+    <p><code>/schedule</code> bulud tapşırığı yaradır. Ajan Anthropic-in serverində, cədvəllə (cron) işə düşür. Məsələn: <i>"Hər gecə saat 02:00-da testləri işlət, sınanları düzəlt, PR aç."</i> Kompüterin sönülü ola bilər. Səhər GitHub-da PR görürsən.</p>
+
+    <h3>Hansını nə vaxt</h3>
+    <table>
+      <tr><th></th><th>Harada işləyir</th><th>Kompüter açıq olmalıdır?</th><th>Nümunə</th></tr>
+      <tr><td>Background</td><td>Sənin kompüterində, bu sessiyada</td><td>Bəli</td><td>"testləri arxada işə sal, mən UI-a baxım"</td></tr>
+      <tr><td><code>/loop</code></td><td>Sənin kompüterində, təkrarlanan</td><td>Bəli</td><td>"hər 30 dəqiqədən bir CI-a bax"</td></tr>
+      <tr><td><code>/schedule</code></td><td>Buludda</td><td><b>Xeyr</b></td><td>"hər gecə 02:00-da test + PR"</td></tr>
+    </table>
+
+    <div class="box bad"><b>Gecə ajanının qızıl qaydası: ajana nəzarətsiz merge icazəsi vermə</b>Səhər oyananda main-də yoxlanmamış kod görmək istəmirsən. Ona görə gecə ajanı:
+      <ul style="margin:6px 0 0">
+        <li><b>ticket</b> ilə işləyir (nə edəcəyi yazılıdır),</li>
+        <li><b>öz worktree / branch-ında</b> işləyir (main-ə toxunmur),</li>
+        <li><b>testlər yaşıl olmadan "bitdi" deyə bilmir</b>. Sənin kit-dəki Stop hook (<code>verify.mjs</code>) bunu məcburi edir,</li>
+        <li>sonda yalnız <b>PR açır</b>. Merge-i səhər <b>sən</b> edirsən.</li>
+      </ul></div>
+  </section>
+
+  <!-- 5 -->
+  <section id="axin">
+    <h2>5 · Hamısı birlikdə: bir iş günü</h2>
+    <ol class="steps">
+      <li><b>Səhər, 15 dəqiqə:</b> 3 ticket yaz (<code>/ticket ...</code>). Hər birinin "Scope" bölməsində fərqli fayllar olsun.</li>
+      <li><b>3 worktree aç:</b> <code>new-worktree.ps1 design</code>, <code>webhook</code>, <code>ab-test</code>.</li>
+      <li><b>3 VS Code pəncərəsi, 3 ajan:</b> hər birinə "tickets/00X-i tətbiq et" de. Hamısı <b>eyni qaydaları</b> CLAUDE.md-dən oxuyur.</li>
+      <li><b>Ajan "bitdi" deyəndə:</b> Stop hook <code>tsc</code> + test işlədir. Qırmızıdırsa ajan dayana bilmir və düzəltməyə davam edir.</li>
+      <li><b>Review:</b> <code>code-reviewer</code> ajanı və <code>/judge</code> (Codex + Gemini, yəni "judge modellər"). Kodu başqa model də yoxlayır.</li>
+      <li><b>Sən:</b> diff-i oxuyursan və merge edirsən. Qərar və məsuliyyət səndədir.</li>
+      <li><b>Axşam:</b> qalan ticket-lər üçün <code>/loop</code> və ya <code>/schedule</code> qurursan. Səhər PR-ları yoxlayırsan.</li>
+    </ol>
+    <div class="flow"><span>ticket</span><i>→</i><span>worktree</span><i>→</i><span>ajan + CLAUDE.md</span><i>→</i><span>test (hook)</span><i>→</i><span>judge review</span><i>→</i><span><b>sən</b> merge edirsən</span></div>
+  </section>
+
+  <!-- 6 -->
+  <section id="hootel">
+    <h2>6 · Hootel üçün hazır demo planı</h2>
+    <p>3 paralel ajan üçün <b>fayl toqquşması olmayan</b> 3 tapşırıq. Hamısı əvvəlki söhbətlərdə tapdığımız real eksiklərdən götürülüb:</p>
+    <table>
+      <tr><th>Ajan / worktree</th><th>Ticket</th><th>Toxunduğu yer</th></tr>
+      <tr><td class="g1">agent/webhook-retry</td><td>Periodik retry worker. İndi retry yalnız restart-da işləyir</td><td><code>src/services/webhook.service.ts</code>, <code>src/api/server.ts</code></td></tr>
+      <tr><td class="g2">agent/design</td><td>RoomCard dizaynının yenilənməsi</td><td><code>client/src/components/</code></td></tr>
+      <tr><td class="g3">agent/docs</td><td>README-dəki səhvlər: port 5173 → 3000, <code>npm start</code> → <code>start:mcp</code></td><td><code>README.md</code></td></tr>
+    </table>
+    <h3>Başlamaq üçün qalan hazırlıq</h3>
+    <ol class="steps">
+      <li><code>claude-kit</code>-i quraşdır: <code>claude-kit/README.md</code>-dəki "Kurulum" addımları. Bundan sonra CLAUDE.md, hook-lar və <code>/ticket</code>, <code>/judge</code> layihədə işləyəcək.</li>
+      <li><code>/ticket</code> ilə yuxarıdakı 3 ticket-i yarat.</li>
+      <li>3 worktree aç, 3 pəncərədə 3 ajan işə sal.</li>
+      <li>Bu prosesi ekran yazısı (video) ilə çək. Müsahibədə göstərə biləcəyin ən güclü material budur.</li>
+    </ol>
+  </section>
+
+  <!-- 7 -->
+  <section id="musahibe">
+    <h2>7 · Müsahibədə necə danışmaq</h2>
+    <div class="qa"><div class="q">"Paralel ajanları necə işlədirsən?"</div>
+      "Hər ajan öz git worktree-sində, öz branch-ında işləyir. Belə olanda bir-birinin yarımçıq kodunu görmürlər. İşi əvvəlcədən fayl sərhədləri olan kiçik ticket-lərə bölürəm, ona görə merge conflict demək olar ki, olmur. Hamısı eyni CLAUDE.md qaydalarını oxuyur."</div>
+    <div class="qa"><div class="q">"Ajanın 'bitdi' dediyinə necə inanırsan?"</div>
+      "İnanmıram, yoxlayıram. Hər ticket-in qəbul şərtləri testlə bağlıdır. Stop hook typecheck və testləri işlətmədən ajanı dayanmağa qoymur. Sonra kodu başqa bir model (Codex/Gemini) review edir. Son qərar isə mənimdir."</div>
+    <div class="qa"><div class="q">"Gecə işi?"</div>
+      "Lokal təkrarlanan işlər üçün <code>/loop</code>, kompüter sönülü olanda <code>/schedule</code> ilə bulud tapşırığı. Gecə ajanı heç vaxt main-ə merge etmir, yalnız PR açır. Səhər mən review edirəm."</div>
+  </section>
+</main>
+</div>
+</body>
+</html>
