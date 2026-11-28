@@ -1,1 +1,36 @@
-klaudda sor is sozlemsindeki looplar falan nece edeceyik birde bu mcpni oxu basdan 
+SABAH ÜÇÜN PLAN (29.11.2026) — AWS bitəndən sonra
+=====================================================
+
+1) CLAUDE QLOBAL QURAŞDIRMA — araşdır, öyrən, sonra qur
+   Claude-u yeni quraşdırmışam, hələ qlobalda heç nə yoxdur.
+   Peşəkar developerlər qlobalda (C:\Users\User\.claude\) nə qurur, araşdır (video izlə):
+   [ ] ~/.claude/CLAUDE.md        -> qısa şəxsi iş tərzi (10-30 sətir)
+   [ ] ~/.claude/settings.json    -> icazələr (.env oxumaq qadağan, npm test / git status icazəsiz)
+   [ ] ~/.claude/commands/        -> /ticket, /judge, /commit, /pr ...
+   [ ] ~/.claude/agents/          -> code-reviewer (yalnız oxuyan)
+   [ ] hook-lar                   -> formatter, "bitdi" deyəndə test işlət
+   [ ] statusline                 -> branch, model, xərc
+   Hazır material: .@OnemliKonular\claude-kit\  (global\ və project\ qovluqları, README.md-də quraşdırma)
+
+2) MCP LAYİHƏSİNDƏN DAVAM — real web layihəni simulyasiya et
+   [ ] claude-kit\project\ -> layihənin kökünə (CLAUDE.md, .claude\hooks, tickets\TEMPLATE.md)
+   [ ] Ticket yaratmaq: /ticket webhook uğursuz olanda periodik retry worker
+   [ ] Ticket-i agent/webhook worktree-sində tətbiq et
+       (worktree hazırdır: Desktop\hootel-booking-mcp-server-wt-webhook)
+   [ ] Paralel ajanlar: 2-3 worktree, hər birində ayrı ticket
+   [ ] Background işlər
+   [ ] /loop  (lokal, təkrarlanan iş) və /schedule (bulud, gecə işi)
+   [ ] Code review: code-reviewer agent
+   [ ] Judge: /judge -> Codex + Gemini ilə ikinci rəy
+   [ ] Pull Request -> review -> merge  (gh CLI qur: winget install GitHub.cli, sonra gh auth login)
+   [ ] İstəyə görə: main üçün branch protection (birbaşa push qadağan, yalnız Pull Request)
+
+İZAHLI SƏNƏDLƏR (bu qovluqda)
+   - paralel-ajanlar\index.html   -> worktree, ticket, CLAUDE.md, /loop izahı
+   - how_to_deploy\index.html     -> lokal işə salma, Render, Netlify, MCP URL
+   - Images\1-README.md, 2-README.md, 1.html, 2.html -> arxitektura sxemləri
+
+BU GÜN EDİLƏNLƏR (28.11.2026)
+   - Worktree demo: agent/design -> Pull Request #1 -> merge -> silindi
+   - agent/webhook worktree + branch saxlanıldı (ticket üçün)
+   - .vscode\mcp.json -> hotel-booking MCP (Render URL) VS Code-a əlavə edildi
